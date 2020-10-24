@@ -20,7 +20,8 @@ public class RelationAnalyzer {
                 interfaceStream(ClassRelation.INHERIT, node, node.interfaces),
                 fieldStream(ClassRelation.MEMBER, node, node.fields),
                 referenceStream(ClassRelation.REFERENCE, node, node.methods)
-        ).flatMap(Function.identity());
+        ).flatMap(Function.identity())
+                .distinct();
     }
 
     private Stream<ClassRelation> referenceStream(String relationType, ClassNode node, List<MethodNode> methods) {
