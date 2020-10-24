@@ -16,7 +16,7 @@ public class RelationAnalyzer {
         classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
         return Stream.of(
-                superClassStream(ClassRelation.INHERIT, node, node.superName),
+                superClassStream(ClassRelation.INHERIT, node),
                 interfaceStream(ClassRelation.INHERIT, node, node.interfaces),
                 fieldStream(ClassRelation.MEMBER, node, node.fields),
                 referenceStream(ClassRelation.REFERENCE, node, node.methods)
@@ -46,20 +46,26 @@ public class RelationAnalyzer {
         }
 
         return interfaces.stream()
-                .filter(className -> !isJavaPlantformType(className))
-                .map(className -> new ClassRelation(node.name, relationType, className));
+                .flatMap(className -> relationStream(node.name, relationType, className));
     }
 
-    private Stream<ClassRelation> superClassStream(String relationType, ClassNode node, String className) {
-        if (className == null || isJavaPlantformType(className)) {
-            return Stream.empty();
-        }
+    private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
+        return relationStream(node.name, relationType, node.superName, node.signature);
+    }
 
-        return Stream.of(new ClassRelation(node.name, relationType, className));
+    private Stream<ClassRelation> relationStream(
+            String fromType,
+            String relationType,
+            String... toTypes) {
+        return Stream.of(toTypes)
+                .filter(Objects::nonNull)
+                .flatMap(combineType -> TypeAnalyzer.analyzeTypes(combineType).stream())
+                .filter(typeName -> !isJavaPlantformType(typeName))
+                .map(typeName -> new ClassRelation(fromType, relationType, typeName));
     }
 
     private boolean isJavaPlantformType(String dataType) {
         return dataType.length() == 1
-                || dataType.startsWith("java.");
+                || dataType.startsWith("java/");
     }
 }

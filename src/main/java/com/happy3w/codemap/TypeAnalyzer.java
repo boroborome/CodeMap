@@ -18,8 +18,7 @@ public class TypeAnalyzer {
             if (typeNameEndIndex < 0) {
                 break;
             }
-            types.add(combineTypeDesc.substring(chIndex, typeNameEndIndex)
-                .replace('/', '.'));
+            types.add(combineTypeDesc.substring(chIndex, typeNameEndIndex));
             chIndex = typeNameEndIndex;
         }
         return types;
