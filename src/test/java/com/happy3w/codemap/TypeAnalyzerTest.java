@@ -16,6 +16,6 @@ public class TypeAnalyzerTest {
     @Test
     public void should_analyze_multiple() {
         List<String> types = TypeAnalyzer.analyzeTypes("Ljava/util/List<Lcom/happy3w/lotterycalculator/LotteryCalculator$NumWeight;>;");
-        Assert.assertEquals("[java/util/List, com/happy3w/lotterycalculator/LotteryCalculator$NumWeight]", types.toString());
+        Assert.assertEquals("[java.util.List, com.happy3w.lotterycalculator.LotteryCalculator$NumWeight]", types.toString());
     }
 }
