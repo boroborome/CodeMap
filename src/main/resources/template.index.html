@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div>不同关系有不同的样式，如果有箭头一定是s指向t。
+    <table border="1">
+        <tr>
+            <th>关系名称</th>
+            <th>说明</th>
+            <th>样式</th>
+        </tr>
+        <tr>
+            <td>inherit</td>
+            <td>继承关系</td>
+            <td>实线，三角箭头</td>
+        </tr>
+        <tr>
+            <td>member</td>
+            <td>成员、组成关系</td>
+            <td>实线，圆头</td>
+        </tr>
+        <tr>
+            <td>reference</td>
+            <td>引用关系</td>
+            <td>虚线，方头</td>
+        </tr>
+        <tr>
+            <td>unknown</td>
+            <td></td>
+            <td>虚线，无头</td>
+        </tr>
+    </table>
+</div>
+<div id="container" style="height: 100%"></div>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script>
+<script type="text/javascript" src="categories.js"></script>
+<script type="text/javascript" src="edges.js"></script>
+<script type="text/javascript" src="nodes.js"></script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    myChart.showLoading();
+
+    var app = {};
+    option = null;
+
+    nodeMap = new Map();
+    graphData = nodes;
+
+    unknownTypeInfo = {
+        symbol: ['none', 'none'],
+        lineStyle: {
+            type: 'dotted'
+        }
+    };
+    typeMap = new Map([[
+        'inherit', {
+            symbol: ['none', 'triangle'],
+            lineStyle: {
+                type: 'solid'
+            }
+        }
+    ], [
+        'member', {
+            symbol: ['none', 'circle'],
+            lineStyle: {
+                type: 'solid'
+            }
+        }
+    ], [
+        'reference', {
+            symbol: ['none', 'circle'],
+            lineStyle: {
+                type: 'dashed'
+            }
+        }
+    ], [
+        'unknown', unknownTypeInfo
+    ]
+    ]);
+    graphLinks = edges.map(function (edge, idx) {
+        typeInfo = typeMap.get(edge.type);
+        if (typeInfo == null) {
+            typeInfo = unknownTypeInfo;
+        }
+        edge.symbol = typeInfo.symbol;
+        edge.lineStyle = typeInfo.lineStyle;
+        return edge;
+    });
+    option = {
+        legend: {
+            data: ['Other']
+        },
+        series: [{
+            type: 'graph',
+            layout: 'force',
+            animation: false,
+            label: {
+                show: true,
+                position: 'right',
+                formatter: '{b}'
+            },
+            draggable: true,
+            data: graphData,
+            categories: categories,
+            force: {
+                edgeLength: 50,
+                repulsion: 200,
+                gravity: 0.2
+            },
+            edgeSymbol: ['none', 'arrow'],
+            links: graphLinks
+        }]
+    };
+
+    myChart.setOption(option);
+    myChart.hideLoading();
+</script>
+</body>
+</html>
