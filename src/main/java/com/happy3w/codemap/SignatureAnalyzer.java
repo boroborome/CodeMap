@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TypeAnalyzer {
+public class SignatureAnalyzer {
     public static List<String> analyzeTypes(String combineTypeDesc) {
         if (combineTypeDesc == null || combineTypeDesc.isEmpty()) {
             return Collections.emptyList();

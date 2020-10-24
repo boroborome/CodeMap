@@ -36,7 +36,7 @@ public class RelationAnalyzer {
         return fields.stream()
                 .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature))
                 .filter(Objects::nonNull)
-                .flatMap(combineType -> TypeAnalyzer.analyzeTypes(combineType).stream())
+                .flatMap(combineType -> SignatureAnalyzer.analyzeTypes(combineType).stream())
                 .filter(typeName -> !isJavaPlantformType(typeName))
                 .map(typeName -> new ClassRelation(node.name, relationType, typeName));
     }
@@ -60,7 +60,7 @@ public class RelationAnalyzer {
             String... toTypes) {
         return Stream.of(toTypes)
                 .filter(Objects::nonNull)
-                .flatMap(combineType -> TypeAnalyzer.analyzeTypes(combineType).stream())
+                .flatMap(combineType -> SignatureAnalyzer.analyzeTypes(combineType).stream())
                 .filter(typeName -> !isJavaPlantformType(typeName))
                 .map(typeName -> new ClassRelation(fromType, relationType, typeName));
     }
