@@ -56,7 +56,7 @@
     graphData = nodes;
 
     unknownTypeInfo = {
-        symbol: ['none', 'none'],
+        symbol: ['none', 'arrow'],
         lineStyle: {
             type: 'dotted'
         }
@@ -70,14 +70,14 @@
         }
     ], [
         'member', {
-            symbol: ['none', 'circle'],
+            symbol: ['none', 'arrow'],
             lineStyle: {
                 type: 'solid'
             }
         }
     ], [
         'reference', {
-            symbol: ['none', 'circle'],
+            symbol: ['none', 'arrow'],
             lineStyle: {
                 type: 'dashed'
             }
@@ -112,10 +112,11 @@
             data: graphData,
             categories: categories,
             force: {
-                edgeLength: 50,
-                repulsion: 200,
-                gravity: 0.2
+                edgeLength: 100,
+                repulsion: 400,
+                gravity: 0.1
             },
+            roam: true,
             edgeSymbol: ['none', 'arrow'],
             links: graphLinks
         }]
