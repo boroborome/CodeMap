@@ -6,6 +6,7 @@ import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -32,8 +33,11 @@ public class RelationAnalyzer {
         }
 
         return fields.stream()
-                .filter(fieldNode -> !isJavaPlantformType(fieldNode.desc))
-                .map(fieldNode -> new ClassRelation(node.name, relationType, fieldNode.desc));
+                .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature))
+                .filter(Objects::nonNull)
+                .flatMap(combineType -> TypeAnalyzer.analyzeTypes(combineType).stream())
+                .filter(typeName -> !isJavaPlantformType(typeName))
+                .map(typeName -> new ClassRelation(node.name, relationType, typeName));
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
@@ -55,8 +59,7 @@ public class RelationAnalyzer {
     }
 
     private boolean isJavaPlantformType(String dataType) {
-        return dataType.length() <= 2
-                || dataType.startsWith("java/")
-                || dataType.startsWith("Ljava/");
+        return dataType.length() == 1
+                || dataType.startsWith("java.");
     }
 }
