@@ -18,7 +18,13 @@ public class SignatureAnalyzer {
             if (typeNameEndIndex < 0) {
                 break;
             }
-            types.add(combineTypeDesc.substring(chIndex, typeNameEndIndex));
+            String typeName = combineTypeDesc.substring(chIndex, typeNameEndIndex);
+            if (typeName.length() > 1
+                    && typeName.charAt(0) == 'T'
+                    && Character.isUpperCase(typeName.charAt(0))) {
+                typeName = typeName.substring(1);
+            }
+            types.add(typeName);
             chIndex = typeNameEndIndex;
         }
         return types;
