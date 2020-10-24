@@ -1,7 +1,5 @@
 package com.happy3w.codemap;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -37,11 +35,11 @@ public class JarLoader {
                 if (entryEnumeration == null) {
                     entryEnumeration = initZin(jarFile);
                 }
-                InputStream classInputStream = findNextClass(entryEnumeration);
-                if (classInputStream == null) {
+                ZipEntry entry = findNextClass(entryEnumeration);
+                if (entry == null) {
                     return false;
                 } else {
-                    action.accept(classInputStream);
+                    action.accept(zipFile.getInputStream(entry));
                     return true;
                 }
             } catch (Exception e) {
@@ -49,7 +47,7 @@ public class JarLoader {
             }
         }
 
-        private InputStream findNextClass(Enumeration<? extends ZipEntry> entryEnumeration) throws IOException {
+        private ZipEntry findNextClass(Enumeration<? extends ZipEntry> entryEnumeration) throws IOException {
             while (entryEnumeration.hasMoreElements()) {
                 ZipEntry entry = entryEnumeration.nextElement();
                 if (entry.isDirectory()) {
@@ -59,7 +57,7 @@ public class JarLoader {
                 if (!fileName.endsWith(".class")) {
                     continue;
                 }
-                return zipFile.getInputStream(entry);
+                return entry;
             }
             return null;
         }
