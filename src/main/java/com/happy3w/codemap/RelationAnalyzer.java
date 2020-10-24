@@ -55,7 +55,7 @@ public class RelationAnalyzer {
     }
 
     private boolean isJavaPlantformType(String dataType) {
-        return dataType.length() == 1
+        return dataType.length() <= 2
                 || dataType.startsWith("java/")
                 || dataType.startsWith("Ljava/");
     }
