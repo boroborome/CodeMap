@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SignatureAnalyzer {
     public static List<String> analyzeTypes(String combineTypeDesc) {
+        System.out.println(combineTypeDesc);
         if (combineTypeDesc == null || combineTypeDesc.isEmpty()) {
             return Collections.emptyList();
         }
@@ -34,30 +35,21 @@ public class SignatureAnalyzer {
         int index = chIndex;
         for (; index < typeChs.length; index++) {
             char ch = typeChs[index];
-            if (ch == '['
-                    || ch == '<'
-                    || ch == '>'
-                    || ch == ';'
-                    || ch == '+'
-                    || ch == ':'
-            ) {
+            if (!isIdentity(ch)) {
                 return index;
             }
         }
         return index == chIndex ? -1 : index;
     }
 
+    private static boolean isIdentity(char ch) {
+        return ch == '/' || Character.isJavaIdentifierPart(ch);
+    }
+
     private static int ignoreStructCh(char[] typeChs, int chIndex) {
         for (; chIndex < typeChs.length; chIndex++) {
             char ch = typeChs[chIndex];
-            if (ch == 'L'
-                    || ch == '['
-                    || ch == '<'
-                    || ch == '>'
-                    || ch == ';'
-                    || ch == '+'
-                    || ch == ':'
-            ) {
+            if (Character.isUpperCase(ch) || !isIdentity(ch)) {
                 continue;
             }
             break;

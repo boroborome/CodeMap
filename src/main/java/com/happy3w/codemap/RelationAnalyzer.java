@@ -26,7 +26,12 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> referenceStream(String relationType, ClassNode node, List<MethodNode> methods) {
-        return Stream.empty();
+        return methods.stream()
+                .flatMap(method -> collectRelationFromMethod(method, relationType, node));
+    }
+
+    private Stream<ClassRelation> collectRelationFromMethod(MethodNode methodNode, String relationType, ClassNode classNode) {
+        return relationStream(classNode.name, relationType, methodNode.desc, methodNode.signature);
     }
 
     private Stream<ClassRelation> fieldStream(String relationType, ClassNode node, List<FieldNode> fields) {
@@ -35,11 +40,7 @@ public class RelationAnalyzer {
         }
 
         return fields.stream()
-                .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature))
-                .filter(Objects::nonNull)
-                .flatMap(combineType -> SignatureAnalyzer.analyzeTypes(combineType).stream())
-                .filter(typeName -> !isJavaPlantformType(typeName))
-                .map(typeName -> new ClassRelation(node.name, relationType, typeName));
+                .flatMap(fieldNode -> relationStream(node.name, relationType, fieldNode.desc, fieldNode.signature));
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
