@@ -1,14 +1,17 @@
 package com.happy3w.codemap;
 
+import com.happy3w.codemap.insn.InsnAnalyzerManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class RelationAnalyzer {
     public Stream<ClassRelation> collectRelations(ClassReader classReader) {
@@ -31,7 +34,19 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> collectRelationFromMethod(MethodNode methodNode, String relationType, ClassNode classNode) {
-        return relationStream(classNode.name, relationType, methodNode.desc, methodNode.signature);
+        return Stream.of(
+                ClassRelation.relationStream(classNode.name, relationType, methodNode.desc, methodNode.signature),
+                collectRelationInInsn(methodNode.instructions, relationType, classNode)
+        ).flatMap(Function.identity());
+    }
+
+    private Stream<ClassRelation> collectRelationInInsn(InsnList instructions, String relationType, ClassNode classNode) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
+                .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc)
+                .flatMap(typeDesc -> SignatureAnalyzer.analyzeTypes(typeDesc).stream())
+                .distinct()
+                .filter(typeName -> !ClassRelation.isJavaPlantformType(typeName))
+                .map(typeName -> new ClassRelation(classNode.name, relationType, typeName));
     }
 
     private Stream<ClassRelation> fieldStream(String relationType, ClassNode node, List<FieldNode> fields) {
@@ -40,7 +55,7 @@ public class RelationAnalyzer {
         }
 
         return fields.stream()
-                .flatMap(fieldNode -> relationStream(node.name, relationType, fieldNode.desc, fieldNode.signature));
+                .flatMap(fieldNode -> ClassRelation.relationStream(node.name, relationType, fieldNode.desc, fieldNode.signature));
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
@@ -49,26 +64,12 @@ public class RelationAnalyzer {
         }
 
         return interfaces.stream()
-                .flatMap(className -> relationStream(node.name, relationType, className));
+                .flatMap(className -> ClassRelation.relationStream(node.name, relationType, className));
     }
 
     private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
-        return relationStream(node.name, relationType, node.superName, node.signature);
+        return ClassRelation.relationStream(node.name, relationType, node.superName, node.signature);
     }
 
-    private Stream<ClassRelation> relationStream(
-            String fromType,
-            String relationType,
-            String... toTypes) {
-        return Stream.of(toTypes)
-                .filter(Objects::nonNull)
-                .flatMap(combineType -> SignatureAnalyzer.analyzeTypes(combineType).stream())
-                .filter(typeName -> !isJavaPlantformType(typeName))
-                .map(typeName -> new ClassRelation(fromType, relationType, typeName));
-    }
 
-    private boolean isJavaPlantformType(String dataType) {
-        return dataType.length() == 1
-                || dataType.startsWith("java/");
-    }
 }

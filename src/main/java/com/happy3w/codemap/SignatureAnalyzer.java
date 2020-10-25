@@ -6,7 +6,6 @@ import java.util.List;
 
 public class SignatureAnalyzer {
     public static List<String> analyzeTypes(String combineTypeDesc) {
-        System.out.println(combineTypeDesc);
         if (combineTypeDesc == null || combineTypeDesc.isEmpty()) {
             return Collections.emptyList();
         }
