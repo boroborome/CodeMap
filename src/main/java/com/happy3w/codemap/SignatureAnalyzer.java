@@ -3,9 +3,25 @@ package com.happy3w.codemap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class SignatureAnalyzer {
-    public static List<String> analyzeTypes(String combineTypeDesc) {
+
+    public static Stream<String> analyzeTypes(String... combineTypeDesc) {
+        return analyzeTypes(Stream.of(combineTypeDesc));
+    }
+
+    public static Stream<String> analyzeTypes(Stream<String> combineTypeDesc) {
+        return combineTypeDesc
+                .filter(Objects::nonNull)
+                .distinct()
+                .flatMap(combineType -> analyzeType(combineType).stream())
+                .distinct()
+                .filter(typeName -> !isJavaPlantformType(typeName));
+    }
+
+    private static List<String> analyzeType(String combineTypeDesc) {
         if (combineTypeDesc == null || combineTypeDesc.isEmpty()) {
             return Collections.emptyList();
         }
@@ -21,7 +37,7 @@ public class SignatureAnalyzer {
             String typeName = combineTypeDesc.substring(chIndex, typeNameEndIndex);
             if (typeName.length() > 1
                     && typeName.charAt(0) == 'T'
-                    && Character.isUpperCase(typeName.charAt(0))) {
+                    && Character.isUpperCase(typeName.charAt(1))) {
                 typeName = typeName.substring(1);
             }
             types.add(typeName);
@@ -54,5 +70,11 @@ public class SignatureAnalyzer {
             break;
         }
         return chIndex;
+    }
+
+    // TODO 以后单独提出来作为Filter处理
+    public static boolean isJavaPlantformType(String dataType) {
+        return dataType.length() == 1
+                || dataType.startsWith("java/");
     }
 }

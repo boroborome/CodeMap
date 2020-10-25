@@ -31,21 +31,23 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> referenceStream(String relationType, ClassNode node, List<MethodNode> methods) {
-        return methods.stream()
-                .flatMap(method -> collectRelationFromMethod(method, relationType, node));
+        Stream<String> typeDescStream = methods.stream()
+                .flatMap(method -> collectRelationFromMethod(method));
+        return SignatureAnalyzer.analyzeTypes(typeDescStream)
+                .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
-    private Stream<ClassRelation> collectRelationFromMethod(MethodNode methodNode, String relationType, ClassNode classNode) {
+    private Stream<String> collectRelationFromMethod(MethodNode methodNode) {
         return Stream.of(
-                ClassRelation.relationStream(classNode.name, relationType, methodNode.desc, methodNode.signature),
-                collectRelationInInsn(methodNode.instructions, relationType, classNode)
+                SignatureAnalyzer.analyzeTypes(methodNode.desc, methodNode.signature),
+                collectRelationInInsn(methodNode.instructions)
         ).flatMap(Function.identity());
+
     }
 
-    private Stream<ClassRelation> collectRelationInInsn(InsnList instructions, String relationType, ClassNode classNode) {
-        Stream<String> typeStream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
+    private Stream<String> collectRelationInInsn(InsnList instructions) {
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
                 .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc);
-        return ClassRelation.relationStream(classNode.name, relationType, typeStream);
     }
 
     private Stream<ClassRelation> fieldStream(String relationType, ClassNode node, List<FieldNode> fields) {
@@ -53,9 +55,10 @@ public class RelationAnalyzer {
             return Stream.empty();
         }
 
-        Stream<String> fieldTypeStream = fields.stream()
+        Stream<String> fieldTypeDescStream = fields.stream()
                 .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature));
-        return ClassRelation.relationStream(node.name, relationType, fieldTypeStream);
+        return SignatureAnalyzer.analyzeTypes(fieldTypeDescStream)
+            .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
@@ -63,12 +66,13 @@ public class RelationAnalyzer {
             return Stream.empty();
         }
 
-        return interfaces.stream()
-                .flatMap(className -> ClassRelation.relationStream(node.name, relationType, className));
+        return SignatureAnalyzer.analyzeTypes(interfaces.stream())
+                .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
     private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
-        return ClassRelation.relationStream(node.name, relationType, node.superName, node.signature);
+        return SignatureAnalyzer.analyzeTypes(node.superName, node.signature)
+                .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
 
