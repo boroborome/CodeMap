@@ -16,6 +16,7 @@ public class RelationAnalyzer {
         classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
         return Stream.of(
+                Stream.of(new ClassRelation(node.name, null, null)),
                 superClassStream(ClassRelation.INHERIT, node),
                 interfaceStream(ClassRelation.INHERIT, node, node.interfaces),
                 fieldStream(ClassRelation.MEMBER, node, node.fields),

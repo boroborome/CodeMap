@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,6 +70,9 @@ public class ResultWriter {
     }
 
     private void writeEdges(ClassRelation classRelation) {
+        if (classRelation.getClassB() == null || classRelation.getClassA() == null) {
+            return;
+        }
         edgesPrint.println(String.format("{source: '%s',type:'%s',target:'%s'},",
                 classRelation.getClassA(),
                 classRelation.getRelation(),
@@ -78,7 +80,7 @@ public class ResultWriter {
     }
 
     private void writeNode(String classType) {
-        if (existClass.contains(classType)) {
+        if (classType == null || classType.isEmpty() || existClass.contains(classType)) {
             return;
         }
         existClass.add(classType);
