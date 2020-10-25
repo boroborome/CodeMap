@@ -58,7 +58,7 @@ public class RelationAnalyzer {
         Stream<String> fieldTypeDescStream = fields.stream()
                 .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature));
         return SignatureAnalyzer.analyzeTypes(fieldTypeDescStream)
-            .map(toType -> new ClassRelation(node.name, relationType, toType));
+                .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
@@ -71,9 +71,11 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
-        return SignatureAnalyzer.analyzeTypes(node.superName, node.signature)
+        Stream<String> typeDescStream = Stream.concat(
+                node.visibleAnnotations == null ? Stream.empty() : node.visibleAnnotations.stream()
+                        .map(annotation -> annotation.desc),
+                Stream.of(node.superName, node.signature));
+        return SignatureAnalyzer.analyzeTypes(typeDescStream)
                 .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
-
-
 }
