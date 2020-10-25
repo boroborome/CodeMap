@@ -38,6 +38,8 @@ public class SignatureAnalyzer {
                     || ch == '<'
                     || ch == '>'
                     || ch == ';'
+                    || ch == '+'
+                    || ch == ':'
             ) {
                 return index;
             }
@@ -53,6 +55,8 @@ public class SignatureAnalyzer {
                     || ch == '<'
                     || ch == '>'
                     || ch == ';'
+                    || ch == '+'
+                    || ch == ':'
             ) {
                 continue;
             }
