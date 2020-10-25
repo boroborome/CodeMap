@@ -8,6 +8,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ public class RelationAnalyzer {
                 fieldStream(ClassRelation.MEMBER, node, node.fields),
                 referenceStream(ClassRelation.REFERENCE, node, node.methods)
         ).flatMap(Function.identity())
+                .filter(r -> !(ClassRelation.REFERENCE.equals(r.getRelation()) && Objects.equals(r.getClassA(), r.getClassB())))
                 .distinct();
     }
 
