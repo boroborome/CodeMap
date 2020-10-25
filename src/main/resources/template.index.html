@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8">
 </head>
-<body style="height: 100%; margin: 0">
-<div>
-    <table border="1" style="position: absolute;left: 0px; top: 0px; background-color: beige">
+<body style="height: 100%; margin: 0" onload="filterNode()">
+<div id="container" style="height: 100%"></div>
+<div style="position: absolute;left: 0px; top: 0px; background-color: beige">
+    <table border="1">
         <tr>
             <th>关系名称</th>
             <th>说明</th>
@@ -32,8 +33,8 @@
             <td>点虚线，箭头</td>
         </tr>
     </table>
+    <input id="filterContent" type="text" onkeydown="checkEntry(event)" style="width: 250px"><input type="button" value="Filter" onclick="filterNode()">
 </div>
-<div id="container" style="height: 100%"></div>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
@@ -45,14 +46,13 @@
 <script type="text/javascript" src="edges.js"></script>
 <script type="text/javascript" src="nodes.js"></script>
 <script type="text/javascript">
+    function checkEntry(event) {
+        if (event.keyCode == 13) {
+            filterNode();
+        }
+    }
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
-    myChart.showLoading();
-
-    option = null;
-
-    nodeMap = new Map();
-    graphData = nodes;
 
     unknownTypeInfo = {
         symbol: ['none', 'arrow'],
@@ -85,58 +85,76 @@
         'unknown', unknownTypeInfo
     ]
     ]);
-    graphLinks = edges.map(function (edge, idx) {
-        typeInfo = typeMap.get(edge.type);
-        if (typeInfo == null) {
-            typeInfo = unknownTypeInfo;
-        }
-        edge.symbol = typeInfo.symbol;
-        edge.lineStyle = typeInfo.lineStyle;
-        return edge;
-    });
-    option = {
-        tooltip: {
-            show: true,
-            trigger: 'item',
-            enterable: true,
-            formatter: function (params, ticket, callback) {
-                var data = params.data;
-                if (data.id != null) {
-                    return data.id.replaceAll('/', '.');
-                }
-                return 'Source:' + data.source.replaceAll('/', '.')
-                    + '<br>Type:' + data.type
-                    + '<br>Target:' + data.target.replaceAll('/', '.') ;
-            }
-        },
-        legend: {
-            data: ['Other']
-        },
-        series: [{
-            type: 'graph',
-            layout: 'force',
-            animation: false,
-            label: {
-                show: true,
-                position: 'right',
-                formatter: '{b}'
-            },
-            draggable: true,
-            data: graphData,
-            categories: categories,
-            force: {
-                edgeLength: 100,
-                repulsion: 400,
-                gravity: 0.1
-            },
-            roam: true,
-            edgeSymbol: ['none', 'arrow'],
-            links: graphLinks
-        }]
-    };
 
-    myChart.setOption(option);
-    myChart.hideLoading();
+    function filterNode() {
+        myChart.showLoading();
+
+        // nodeMap = new Map();
+        var filterKey = filterContent.value.replaceAll('.', '/');
+        graphData = nodes.filter(function (node) {
+            return filterKey == null
+                || filterKey == ""
+                || node.id.indexOf(filterKey) >= 0;
+        });
+
+        graphLinks = edges.filter(function (edge) {
+            return filterKey == null
+                || filterKey == ""
+                || edge.source.indexOf(filterKey) >= 0 && edge.target.indexOf(filterKey) >= 0;
+        })
+            .map(function (edge, idx) {
+                typeInfo = typeMap.get(edge.type);
+                if (typeInfo == null) {
+                    typeInfo = unknownTypeInfo;
+                }
+                edge.symbol = typeInfo.symbol;
+                edge.lineStyle = typeInfo.lineStyle;
+                return edge;
+            });
+        option = {
+            tooltip: {
+                show: true,
+                trigger: 'item',
+                enterable: true,
+                formatter: function (params, ticket, callback) {
+                    var data = params.data;
+                    if (data.id != null) {
+                        return data.id.replaceAll('/', '.');
+                    }
+                    return 'Source:' + data.source.replaceAll('/', '.')
+                        + '<br>Type:' + data.type
+                        + '<br>Target:' + data.target.replaceAll('/', '.') ;
+                }
+            },
+            legend: {
+                data: ['Other']
+            },
+            series: [{
+                type: 'graph',
+                layout: 'force',
+                animation: false,
+                label: {
+                    show: true,
+                    position: 'right',
+                    formatter: '{b}'
+                },
+                draggable: true,
+                data: graphData,
+                categories: categories,
+                force: {
+                    edgeLength: 100,
+                    repulsion: 400,
+                    gravity: 0.1
+                },
+                roam: true,
+                edgeSymbol: ['none', 'arrow'],
+                links: graphLinks
+            }]
+        };
+
+        myChart.setOption(option);
+        myChart.hideLoading();
+    }
 </script>
 </body>
 </html>
