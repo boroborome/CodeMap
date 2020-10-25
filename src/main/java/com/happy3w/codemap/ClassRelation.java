@@ -33,7 +33,9 @@ public class ClassRelation {
             Stream<String> typeStream) {
         return typeStream
                 .filter(Objects::nonNull)
+                .distinct()
                 .flatMap(combineType -> SignatureAnalyzer.analyzeTypes(combineType).stream())
+                .distinct()
                 .filter(typeName -> !isJavaPlantformType(typeName))
                 .map(typeName -> new ClassRelation(fromType, relationType, typeName));
     }

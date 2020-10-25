@@ -41,12 +41,9 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> collectRelationInInsn(InsnList instructions, String relationType, ClassNode classNode) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
-                .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc)
-                .flatMap(typeDesc -> SignatureAnalyzer.analyzeTypes(typeDesc).stream())
-                .distinct()
-                .filter(typeName -> !ClassRelation.isJavaPlantformType(typeName))
-                .map(typeName -> new ClassRelation(classNode.name, relationType, typeName));
+        Stream<String> typeStream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
+                .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc);
+        return ClassRelation.relationStream(classNode.name, relationType, typeStream);
     }
 
     private Stream<ClassRelation> fieldStream(String relationType, ClassNode node, List<FieldNode> fields) {
@@ -54,8 +51,9 @@ public class RelationAnalyzer {
             return Stream.empty();
         }
 
-        return fields.stream()
-                .flatMap(fieldNode -> ClassRelation.relationStream(node.name, relationType, fieldNode.desc, fieldNode.signature));
+        Stream<String> fieldTypeStream = fields.stream()
+                .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature));
+        return ClassRelation.relationStream(node.name, relationType, fieldTypeStream);
     }
 
     private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {

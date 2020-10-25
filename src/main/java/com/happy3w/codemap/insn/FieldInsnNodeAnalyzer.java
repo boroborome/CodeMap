@@ -12,6 +12,6 @@ public class FieldInsnNodeAnalyzer implements InsnAnalyzer<FieldInsnNode>{
 
     @Override
     public Stream<String> refTypes(FieldInsnNode insnNode) {
-        return Stream.of(insnNode.desc);
+        return Stream.of(insnNode.owner, insnNode.desc);
     }
 }

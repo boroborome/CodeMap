@@ -13,6 +13,6 @@ public class MethodInsnAnalyzer implements InsnAnalyzer<MethodInsnNode> {
 
     @Override
     public Stream<String> refTypes(MethodInsnNode insnNode) {
-        return Stream.of(insnNode.desc);
+        return Stream.of(insnNode.owner, insnNode.desc);
     }
 }
