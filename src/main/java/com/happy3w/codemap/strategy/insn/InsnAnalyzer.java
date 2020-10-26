@@ -1,4 +1,4 @@
-package com.happy3w.codemap.insn;
+package com.happy3w.codemap.strategy.insn;
 
 import java.util.stream.Stream;
 

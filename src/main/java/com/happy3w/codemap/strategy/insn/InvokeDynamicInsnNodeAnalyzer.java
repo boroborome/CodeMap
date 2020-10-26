@@ -1,11 +1,13 @@
-package com.happy3w.codemap.insn;
+package com.happy3w.codemap.strategy.insn;
 
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.InvokeDynamicInsnNode;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+@Component
 public class InvokeDynamicInsnNodeAnalyzer implements InsnAnalyzer<InvokeDynamicInsnNode> {
     @Override
     public Class<InvokeDynamicInsnNode> getInsnNodeType() {

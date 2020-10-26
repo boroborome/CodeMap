@@ -1,9 +1,11 @@
-package com.happy3w.codemap.insn;
+package com.happy3w.codemap.strategy.insn;
 
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Stream;
 
+@Component
 public class MethodInsnAnalyzer implements InsnAnalyzer<MethodInsnNode> {
 
     @Override

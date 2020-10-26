@@ -1,14 +1,13 @@
 package com.happy3w.codemap.component;
 
 import com.happy3w.codemap.model.ClassRelation;
+import com.happy3w.codemap.strategy.insn.InsnAnalyzerManager;
 import com.happy3w.codemap.utils.ConstConfig;
-import com.happy3w.codemap.insn.InsnAnalyzerManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,24 +19,24 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class RelationAnalyzer {
-    @Autowired
-    private SignatureAnalyzer signatureAnalyzer;
+    private final SignatureAnalyzer signatureAnalyzer;
+    private final InsnAnalyzerManager insnAnalyzerManager;
+
+    public RelationAnalyzer(SignatureAnalyzer signatureAnalyzer, InsnAnalyzerManager insnAnalyzerManager) {
+        this.signatureAnalyzer = signatureAnalyzer;
+        this.insnAnalyzerManager = insnAnalyzerManager;
+    }
 
     public Stream<ClassRelation> collectRelations(ClassReader classReader) {
         ClassNode node = new ClassNode();
         classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
-        String sourceName = calculateSourceName(node.name);
-        boolean isInnerClass = !sourceName.equals(node.name);
-        String inheritRelation = isInnerClass ? ClassRelation.REFERENCE : ClassRelation.INHERIT;
         return Stream.of(
-                Stream.of(new ClassRelation(sourceName, null, null)),
-                toRelation(sourceName, inheritRelation , superClassStream(node)),
-                toRelation(sourceName, inheritRelation, interfaceStream(node.interfaces)),
-                toRelation(sourceName,
-                        isInnerClass ? ClassRelation.REFERENCE: ClassRelation.MEMBER,
-                        fieldStream(node.fields)),
-                toRelation(sourceName, ClassRelation.REFERENCE, referenceStream(node))
+                Stream.of(new ClassRelation(node.name, null, null)),
+                toRelation(node.name, ClassRelation.INHERIT , superClassStream(node)),
+                toRelation(node.name, ClassRelation.INHERIT, interfaceStream(node.interfaces)),
+                toRelation(node.name, ClassRelation.MEMBER, fieldStream(node.fields)),
+                toRelation(node.name, ClassRelation.REFERENCE, referenceStream(node))
         ).flatMap(Function.identity())
                 .filter(r -> !(ClassRelation.REFERENCE.equals(r.getRelation()) && Objects.equals(r.getClassA(), r.getClassB())))
                 .distinct();
@@ -79,7 +78,7 @@ public class RelationAnalyzer {
 
     private Stream<String> collectRelationInInsn(InsnList instructions) {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(instructions.iterator(), 0), false)
-                .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc);
+                .flatMap(insnAnalyzerManager::analyzeRefTypeDesc);
     }
 
     private Stream<String> fieldStream(List<FieldNode> fields) {
