@@ -19,26 +19,46 @@ public class RelationAnalyzer {
         ClassNode node = new ClassNode();
         classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
+        String sourceName = calculateSourceName(node.name);
+        boolean isInnerClass = !sourceName.equals(node.name);
+        String inheritRelation = isInnerClass ? ClassRelation.REFERENCE : ClassRelation.INHERIT;
         return Stream.of(
-                Stream.of(new ClassRelation(node.name, null, null)),
-                superClassStream(ClassRelation.INHERIT, node),
-                interfaceStream(ClassRelation.INHERIT, node, node.interfaces),
-                fieldStream(ClassRelation.MEMBER, node, node.fields),
-                referenceStream(ClassRelation.REFERENCE, node)
+                Stream.of(new ClassRelation(sourceName, null, null)),
+                toRelation(sourceName, inheritRelation , superClassStream(node)),
+                toRelation(sourceName, inheritRelation, interfaceStream(node.interfaces)),
+                toRelation(sourceName,
+                        isInnerClass ? ClassRelation.REFERENCE: ClassRelation.MEMBER,
+                        fieldStream(node.fields)),
+                toRelation(sourceName, ClassRelation.REFERENCE, referenceStream(node))
         ).flatMap(Function.identity())
                 .filter(r -> !(ClassRelation.REFERENCE.equals(r.getRelation()) && Objects.equals(r.getClassA(), r.getClassB())))
                 .distinct();
     }
 
-    private Stream<ClassRelation> referenceStream(String relationType, ClassNode node) {
+    private String calculateSourceName(String name) {
+        if (!ConstConfig.MergeAnonymityClass) {
+            return name;
+        }
+
+        int startPos = name.lastIndexOf('/');
+        if (startPos < 0) {
+            startPos = 0;
+        }
+        int endPos = name.indexOf('$', startPos);
+        if (endPos < 0) {
+            return name;
+        }
+        return name.substring(0, endPos);
+    }
+
+    private Stream<String> referenceStream(ClassNode node) {
         Stream<String> annotationTypeDescStream = node.visibleAnnotations == null
                 ? Stream.empty()
                 : node.visibleAnnotations.stream()
                         .map(annotation -> annotation.desc);
         Stream<String> methodTypeDescStream = node.methods.stream()
                 .flatMap(method -> collectRelationFromMethod(method));
-        return SignatureAnalyzer.analyzeTypes(Stream.concat(annotationTypeDescStream, methodTypeDescStream))
-                .map(toType -> new ClassRelation(node.name, relationType, toType));
+        return Stream.concat(annotationTypeDescStream, methodTypeDescStream);
     }
 
     private Stream<String> collectRelationFromMethod(MethodNode methodNode) {
@@ -54,29 +74,25 @@ public class RelationAnalyzer {
                 .flatMap(InsnAnalyzerManager::analyzeRefTypeDesc);
     }
 
-    private Stream<ClassRelation> fieldStream(String relationType, ClassNode node, List<FieldNode> fields) {
+    private Stream<String> fieldStream(List<FieldNode> fields) {
         if (fields == null || fields.isEmpty()) {
             return Stream.empty();
         }
 
-        Stream<String> fieldTypeDescStream = fields.stream()
+        return fields.stream()
                 .flatMap(fieldNode -> Stream.of(fieldNode.desc, fieldNode.signature));
-        return SignatureAnalyzer.analyzeTypes(fieldTypeDescStream)
-                .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
-    private Stream<ClassRelation> interfaceStream(String relationType, ClassNode node, List<String> interfaces) {
-        if (interfaces == null || interfaces.isEmpty()) {
-            return Stream.empty();
-        }
-
-        return SignatureAnalyzer.analyzeTypes(interfaces.stream())
-                .map(toType -> new ClassRelation(node.name, relationType, toType));
+    private Stream<String> interfaceStream(List<String> interfaces) {
+        return interfaces == null ? Stream.empty() : interfaces.stream();
     }
 
-    private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
-        Stream<String> typeDescStream = Stream.of(node.superName, node.signature);
-        return SignatureAnalyzer.analyzeTypes(typeDescStream)
-                .map(toType -> new ClassRelation(node.name, relationType, toType));
+    private Stream<String> superClassStream(ClassNode node) {
+        return Stream.of(node.superName, node.signature);
+    }
+
+    private Stream<ClassRelation> toRelation(String fromType, String relationType, Stream<String> toTypeStream) {
+        return SignatureAnalyzer.analyzeTypes(toTypeStream)
+                .map(toType -> new ClassRelation(fromType, relationType, toType));
     }
 }
