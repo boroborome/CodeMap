@@ -1,11 +1,15 @@
-package com.happy3w.codemap;
+package com.happy3w.codemap.component;
 
+import com.happy3w.codemap.model.ClassRelation;
+import com.happy3w.codemap.utils.ConstConfig;
 import com.happy3w.codemap.insn.InsnAnalyzerManager;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +18,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@Component
 public class RelationAnalyzer {
+    @Autowired
+    private SignatureAnalyzer signatureAnalyzer;
+
     public Stream<ClassRelation> collectRelations(ClassReader classReader) {
         ClassNode node = new ClassNode();
         classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
@@ -63,7 +71,7 @@ public class RelationAnalyzer {
 
     private Stream<String> collectRelationFromMethod(MethodNode methodNode) {
         return Stream.of(
-                SignatureAnalyzer.analyzeTypes(methodNode.desc, methodNode.signature),
+                signatureAnalyzer.analyzeTypes(methodNode.desc, methodNode.signature),
                 collectRelationInInsn(methodNode.instructions)
         ).flatMap(Function.identity());
 
@@ -92,7 +100,7 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> toRelation(String fromType, String relationType, Stream<String> toTypeStream) {
-        return SignatureAnalyzer.analyzeTypes(toTypeStream)
+        return signatureAnalyzer.analyzeTypes(toTypeStream)
                 .map(toType -> new ClassRelation(fromType, relationType, toType));
     }
 }

@@ -1,4 +1,6 @@
-package com.happy3w.codemap;
+package com.happy3w.codemap.component;
+
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,13 +8,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@Component
 public class SignatureAnalyzer {
 
-    public static Stream<String> analyzeTypes(String... combineTypeDesc) {
+    public Stream<String> analyzeTypes(String... combineTypeDesc) {
         return analyzeTypes(Stream.of(combineTypeDesc));
     }
 
-    public static Stream<String> analyzeTypes(Stream<String> combineTypeDesc) {
+    public Stream<String> analyzeTypes(Stream<String> combineTypeDesc) {
         return combineTypeDesc
                 .filter(Objects::nonNull)
                 .distinct()
@@ -21,7 +24,7 @@ public class SignatureAnalyzer {
                 .filter(typeName -> !isJavaPlantformType(typeName));
     }
 
-    private static List<String> analyzeType(String combineTypeDesc) {
+    private List<String> analyzeType(String combineTypeDesc) {
         if (combineTypeDesc == null || combineTypeDesc.isEmpty()) {
             return Collections.emptyList();
         }
@@ -46,7 +49,7 @@ public class SignatureAnalyzer {
         return types;
     }
 
-    private static int findNameEnd(char[] typeChs, int chIndex) {
+    private int findNameEnd(char[] typeChs, int chIndex) {
         int index = chIndex;
         for (; index < typeChs.length; index++) {
             char ch = typeChs[index];
@@ -57,11 +60,11 @@ public class SignatureAnalyzer {
         return index == chIndex ? -1 : index;
     }
 
-    private static boolean isIdentity(char ch) {
+    private boolean isIdentity(char ch) {
         return ch == '/' || Character.isJavaIdentifierPart(ch);
     }
 
-    private static int ignoreStructCh(char[] typeChs, int chIndex) {
+    private int ignoreStructCh(char[] typeChs, int chIndex) {
         for (; chIndex < typeChs.length; chIndex++) {
             char ch = typeChs[chIndex];
             if (Character.isUpperCase(ch) || !isIdentity(ch)) {
@@ -73,7 +76,7 @@ public class SignatureAnalyzer {
     }
 
     // TODO 以后单独提出来作为Filter处理
-    public static boolean isJavaPlantformType(String dataType) {
+    public boolean isJavaPlantformType(String dataType) {
         return dataType.length() == 1
                 || dataType.startsWith("java/");
     }

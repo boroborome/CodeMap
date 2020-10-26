@@ -1,4 +1,6 @@
-package com.happy3w.codemap;
+package com.happy3w.codemap.utils;
+
+import com.happy3w.codemap.model.ClassRelation;
 
 import java.io.File;
 import java.io.FileNotFoundException;

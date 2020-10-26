@@ -1,46 +1,63 @@
 package com.happy3w.codemap;
 
+import com.happy3w.codemap.component.RelationAnalyzer;
+import com.happy3w.codemap.utils.JarLoader;
+import com.happy3w.codemap.utils.ResultWriter;
 import org.objectweb.asm.ClassReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 @SpringBootApplication
-public class CodeMapApplication implements CommandLineRunner {
+public class CodeMapApplication {
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) {
         SpringApplication.run(CodeMapApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        if (args.length < 2) {
-            System.out.println("Usage: java -jar CodeMap.jar xxx.jar index.html");
-            System.exit(1);
-        }
-
-        String jarFile = args[0];
-        String outHtml = args[1];
-
-        ResultWriter writer = new ResultWriter(outHtml);
-        RelationAnalyzer analyzer = new RelationAnalyzer();
-
-        writer.start();
-        JarLoader.listAllClassesBytes(jarFile)
-                .map(CodeMapApplication::createClassReader)
-                .flatMap(analyzer::collectRelations)
-                .forEach(writer::write);
-        writer.close();
+    @Bean
+    @ConditionalOnProperty(name = "com.happy3w.code-map.cmdline-mode", havingValue = "true", matchIfMissing = true)
+    public CommandStarter commandStarter() {
+        return new CommandStarter();
     }
 
-    private static ClassReader createClassReader(InputStream inputStream) {
-        try {
-            return new ClassReader(inputStream);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Failed to load class data.");
+    public static class CommandStarter implements CommandLineRunner {
+        @Autowired
+        private RelationAnalyzer relationAnalyzer;
+
+        @Override
+        public void run(String... args) throws Exception {
+            if (args.length < 2) {
+                System.out.println("Usage: java -jar CodeMap.jar xxx.jar index.html");
+                System.exit(1);
+            }
+
+            String jarFile = args[0];
+            String outHtml = args[1];
+
+            ResultWriter writer = new ResultWriter(outHtml);
+
+            writer.start();
+            JarLoader.listAllClassesBytes(jarFile)
+                    .map(this::createClassReader)
+                    .flatMap(relationAnalyzer::collectRelations)
+                    .forEach(writer::write);
+            writer.close();
+        }
+
+        private ClassReader createClassReader(InputStream inputStream) {
+            try {
+                return new ClassReader(inputStream);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Failed to load class data.");
+            }
         }
     }
 }

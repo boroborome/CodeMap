@@ -1,4 +1,4 @@
-package com.happy3w.codemap;
+package com.happy3w.codemap.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

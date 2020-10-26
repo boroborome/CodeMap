@@ -1,4 +1,4 @@
-package com.happy3w.codemap;
+package com.happy3w.codemap.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
