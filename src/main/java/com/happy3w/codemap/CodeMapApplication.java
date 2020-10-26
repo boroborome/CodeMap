@@ -1,13 +1,22 @@
 package com.happy3w.codemap;
 
 import org.objectweb.asm.ClassReader;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CodeMapApplication {
+@SpringBootApplication
+public class CodeMapApplication implements CommandLineRunner {
+
     public static void main(String[] args) throws IOException {
-//        SpringApplication.run(CodeMapApplication.class, args);
+        SpringApplication.run(CodeMapApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
         if (args.length < 2) {
             System.out.println("Usage: java -jar CodeMap.jar xxx.jar index.html");
             System.exit(1);
