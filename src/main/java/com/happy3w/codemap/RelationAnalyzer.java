@@ -24,16 +24,20 @@ public class RelationAnalyzer {
                 superClassStream(ClassRelation.INHERIT, node),
                 interfaceStream(ClassRelation.INHERIT, node, node.interfaces),
                 fieldStream(ClassRelation.MEMBER, node, node.fields),
-                referenceStream(ClassRelation.REFERENCE, node, node.methods)
+                referenceStream(ClassRelation.REFERENCE, node)
         ).flatMap(Function.identity())
                 .filter(r -> !(ClassRelation.REFERENCE.equals(r.getRelation()) && Objects.equals(r.getClassA(), r.getClassB())))
                 .distinct();
     }
 
-    private Stream<ClassRelation> referenceStream(String relationType, ClassNode node, List<MethodNode> methods) {
-        Stream<String> typeDescStream = methods.stream()
+    private Stream<ClassRelation> referenceStream(String relationType, ClassNode node) {
+        Stream<String> annotationTypeDescStream = node.visibleAnnotations == null
+                ? Stream.empty()
+                : node.visibleAnnotations.stream()
+                        .map(annotation -> annotation.desc);
+        Stream<String> methodTypeDescStream = node.methods.stream()
                 .flatMap(method -> collectRelationFromMethod(method));
-        return SignatureAnalyzer.analyzeTypes(typeDescStream)
+        return SignatureAnalyzer.analyzeTypes(Stream.concat(annotationTypeDescStream, methodTypeDescStream))
                 .map(toType -> new ClassRelation(node.name, relationType, toType));
     }
 
@@ -71,10 +75,7 @@ public class RelationAnalyzer {
     }
 
     private Stream<ClassRelation> superClassStream(String relationType, ClassNode node) {
-        Stream<String> typeDescStream = Stream.concat(
-                node.visibleAnnotations == null ? Stream.empty() : node.visibleAnnotations.stream()
-                        .map(annotation -> annotation.desc),
-                Stream.of(node.superName, node.signature));
+        Stream<String> typeDescStream = Stream.of(node.superName, node.signature);
         return SignatureAnalyzer.analyzeTypes(typeDescStream)
                 .map(toType -> new ClassRelation(node.name, relationType, toType));
     }

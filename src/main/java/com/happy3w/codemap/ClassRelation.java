@@ -16,4 +16,9 @@ public class ClassRelation {
     private String classA;
     private String relation;
     private String classB;
+
+    @Override
+    public String toString() {
+        return String.format("%s-%s->%s", classA, relation, classB);
+    }
 }
