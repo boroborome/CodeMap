@@ -2,7 +2,6 @@ package com.happy3w.codemap.component;
 
 import com.happy3w.codemap.model.ClassRelation;
 import com.happy3w.codemap.strategy.insn.InsnAnalyzerManager;
-import com.happy3w.codemap.utils.ConstConfig;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -21,10 +20,15 @@ import java.util.stream.StreamSupport;
 public class RelationAnalyzer {
     private final SignatureAnalyzer signatureAnalyzer;
     private final InsnAnalyzerManager insnAnalyzerManager;
+    private final InnerClassAdapter innerClassAdapter;
 
-    public RelationAnalyzer(SignatureAnalyzer signatureAnalyzer, InsnAnalyzerManager insnAnalyzerManager) {
+    public RelationAnalyzer(
+            SignatureAnalyzer signatureAnalyzer,
+            InsnAnalyzerManager insnAnalyzerManager,
+            InnerClassAdapter innerClassAdapter) {
         this.signatureAnalyzer = signatureAnalyzer;
         this.insnAnalyzerManager = insnAnalyzerManager;
+        this.innerClassAdapter = innerClassAdapter;
     }
 
     public Stream<ClassRelation> collectRelations(ClassReader classReader) {
@@ -38,24 +42,9 @@ public class RelationAnalyzer {
                 toRelation(node.name, ClassRelation.MEMBER, fieldStream(node.fields)),
                 toRelation(node.name, ClassRelation.REFERENCE, referenceStream(node))
         ).flatMap(Function.identity())
+                .map(innerClassAdapter::adapt)
                 .filter(r -> !(ClassRelation.REFERENCE.equals(r.getRelation()) && Objects.equals(r.getClassA(), r.getClassB())))
                 .distinct();
-    }
-
-    private String calculateSourceName(String name) {
-        if (!ConstConfig.MergeAnonymityClass) {
-            return name;
-        }
-
-        int startPos = name.lastIndexOf('/');
-        if (startPos < 0) {
-            startPos = 0;
-        }
-        int endPos = name.indexOf('$', startPos);
-        if (endPos < 0) {
-            return name;
-        }
-        return name.substring(0, endPos);
     }
 
     private Stream<String> referenceStream(ClassNode node) {
