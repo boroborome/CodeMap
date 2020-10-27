@@ -53,7 +53,9 @@
 <div id="container" style="height: 100%;"></div>
 <ctrl-panel>
     <filter-panel>
-        <input id="filterContent" type="text" onkeydown="checkEntry(event)" style="width: 250px"><input type="button" value="Filter" onclick="filterNode()">
+        Include:<input id="includeContent" type="text" onkeydown="checkEntry(event)" style="width: 250px">
+        Exclude:<input id="excludeContent" type="text" onkeydown="checkEntry(event)" style="width: 250px">
+        <input type="button" value="Filter" onclick="filterNode()">
     </filter-panel>
     <help-panel>
         <div class="tooltip">(?)
@@ -139,21 +141,35 @@
     ]
     ]);
 
+    function matchAny(value, target) {
+        for (index = 0; index < target.length; index++) {
+            v = target[index];
+            if (value.indexOf(v) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function strMatch(value, includes, excludes) {
+        return (includes.length == 0
+            || matchAny(value, includes))
+            && (excludes.length == 0
+                || !matchAny(value, excludes));
+    }
     function filterNode() {
         myChart.showLoading();
 
         // nodeMap = new Map();
-        var filterKey = filterContent.value.replaceAll('.', '/');
+        var includeTexts = includeContent.value.replaceAll('.', '/').split(";").filter(a => a != "");
+        var excludeTexts = excludeContent.value.replaceAll('.', '/').split(";").filter(a => a != "");
         graphData = nodes.filter(function (node) {
-            return filterKey == null
-                || filterKey == ""
-                || node.id.indexOf(filterKey) >= 0;
+            return strMatch(node.id, includeTexts, excludeTexts);
         });
 
         graphLinks = edges.filter(function (edge) {
-            return filterKey == null
-                || filterKey == ""
-                || edge.source.indexOf(filterKey) >= 0 && edge.target.indexOf(filterKey) >= 0;
+            return strMatch(edge.source, includeTexts, excludeTexts)
+                && strMatch(edge.target, includeTexts, excludeTexts);
         })
             .map(function (edge, idx) {
                 typeInfo = typeMap.get(edge.type);
