@@ -53,9 +53,11 @@
 <div id="container" style="height: 100%;"></div>
 <ctrl-panel>
     <filter-panel>
-        Include:<input id="includeContent" type="text" onkeydown="checkEntry(event)" style="width: 250px">
-        Exclude:<input id="excludeContent" type="text" onkeydown="checkEntry(event)" style="width: 250px">
-        <input type="button" value="Filter" onclick="filterNode()">
+        Include:<input id="includeContent" type="text" onkeydown="checkEntry(event, refreshNodes)" style="width: 250px">
+        Exclude:<input id="excludeContent" type="text" onkeydown="checkEntry(event, refreshNodes)" style="width: 250px">
+        <input type="button" value="Filter" onclick="refreshNodes()"><br>
+        High Light:<input id="highLightContent" type="text" onkeydown="checkEntry(event, refreshHighLightNodes)" style="width: 250px">
+        <input type="button" value="High Light" onclick="refreshNodes()"><br>
     </filter-panel>
     <help-panel>
         <div class="tooltip">(?)
@@ -101,9 +103,9 @@
 <script type="text/javascript" src="edges.js"></script>
 <script type="text/javascript" src="nodes.js"></script>
 <script type="text/javascript">
-    function checkEntry(event) {
+    function checkEntry(event, action) {
         if (event.keyCode == 13) {
-            filterNode();
+            action();
         }
     }
     var dom = document.getElementById("container");
@@ -141,6 +143,27 @@
     ]
     ]);
 
+    lastOption = null;
+    function refreshHighLightNodes() {
+        if (lastOption == null) {
+            refreshNodes();
+            return;
+        }
+        var highLightTexts = readTexts(highLightContent);
+        lastOption.series[0].data.forEach(node => {
+            configHighLight(node, highLightTexts)
+        });
+        myChart.setOption(lastOption);
+    }
+
+    function configHighLight(node, hightLightTexts) {
+        if (hightLightTexts != null && hightLightTexts.length > 0 && matchAny(node.id, hightLightTexts)) {
+            node.symbolSize = 20;
+        } else {
+            node.symbolSize = 10;
+        }
+    }
+
     function matchAny(value, target) {
         for (index = 0; index < target.length; index++) {
             v = target[index];
@@ -157,14 +180,26 @@
             && (excludes.length == 0
                 || !matchAny(value, excludes));
     }
-    function filterNode() {
+
+    function readTexts(ctrl) {
+        return ctrl.value
+            .replaceAll('.', '/')
+            .split(";")
+            .filter(a => a != "");
+    }
+
+    function refreshNodes() {
         myChart.showLoading();
 
         // nodeMap = new Map();
-        var includeTexts = includeContent.value.replaceAll('.', '/').split(";").filter(a => a != "");
-        var excludeTexts = excludeContent.value.replaceAll('.', '/').split(";").filter(a => a != "");
+        var includeTexts = readTexts(includeContent);
+        var excludeTexts = readTexts(excludeContent);
+        var highLightTexts = readTexts(highLightContent);
         graphData = nodes.filter(function (node) {
             return strMatch(node.id, includeTexts, excludeTexts);
+        });
+        graphData.forEach(node => {
+            configHighLight(node, highLightTexts)
         });
 
         graphLinks = edges.filter(function (edge) {
@@ -180,7 +215,15 @@
                 edge.lineStyle = typeInfo.lineStyle;
                 return edge;
             });
-        option = {
+        option = createOption(graphData, graphLinks);
+
+        myChart.setOption(option);
+        myChart.hideLoading();
+        lastOption = option;
+    }
+
+    function createOption(graphData, graphLinks) {
+        return {
             tooltip: {
                 show: true,
                 trigger: 'item',
@@ -220,9 +263,6 @@
                 links: graphLinks
             }]
         };
-
-        myChart.setOption(option);
-        myChart.hideLoading();
     }
 </script>
 </body>
