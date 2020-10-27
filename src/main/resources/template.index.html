@@ -1,40 +1,93 @@
 <!DOCTYPE html>
-<html style="height: 100%">
+<html>
 <head>
+    <title>Code Map</title>
     <meta charset="utf-8">
+    <style type="text/css">
+        ctrl-panel {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+        }
+        filter-panel {
+            width: 90%;
+            float: left;
+            background-color: beige
+        }
+        help-panel {
+            width: 10%;
+            float: left;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+
+        .tooltip .tooltiptext {
+            background-color: aliceblue;
+
+            width: 400px;
+            visibility: hidden;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+
+            /* 定位 */
+            position: absolute;
+            z-index: 1;
+            top: -5px;
+            right: 105%;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+        html,body{
+            height:100%;
+        }
+    </style>
 </head>
-<body style="height: 100%; margin: 0" onload="filterNode()">
-<div id="container" style="height: 100%"></div>
-<div style="position: absolute;left: 0px; top: 0px; background-color: beige">
-    <table border="1">
-        <tr>
-            <th>关系名称</th>
-            <th>说明</th>
-            <th>样式</th>
-        </tr>
-        <tr>
-            <td>inherit</td>
-            <td>继承关系</td>
-            <td>实线，三角箭头</td>
-        </tr>
-        <tr>
-            <td>member</td>
-            <td>成员、组成关系</td>
-            <td>实线，箭头</td>
-        </tr>
-        <tr>
-            <td>reference</td>
-            <td>引用关系</td>
-            <td>虚线，箭头</td>
-        </tr>
-        <tr>
-            <td>unknown</td>
-            <td></td>
-            <td>点虚线，箭头</td>
-        </tr>
-    </table>
-    <input id="filterContent" type="text" onkeydown="checkEntry(event)" style="width: 250px"><input type="button" value="Filter" onclick="filterNode()">
-</div>
+<body>
+<div id="container" style="height: 100%;"></div>
+<ctrl-panel>
+    <filter-panel>
+        <input id="filterContent" type="text" onkeydown="checkEntry(event)" style="width: 250px"><input type="button" value="Filter" onclick="filterNode()">
+    </filter-panel>
+    <help-panel>
+        <div class="tooltip">(?)
+            <table border="1" class="tooltiptext">
+                <tr>
+                    <th>关系名称</th>
+                    <th>说明</th>
+                    <th>样式</th>
+                </tr>
+                <tr>
+                    <td>inherit</td>
+                    <td>继承关系</td>
+                    <td>实线，三角箭头</td>
+                </tr>
+                <tr>
+                    <td>member</td>
+                    <td>成员、组成关系</td>
+                    <td>实线，箭头</td>
+                </tr>
+                <tr>
+                    <td>reference</td>
+                    <td>引用关系</td>
+                    <td>虚线，箭头</td>
+                </tr>
+                <tr>
+                    <td>unknown</td>
+                    <td></td>
+                    <td>点虚线，箭头</td>
+                </tr>
+            </table>
+        </div>
+    </help-panel>
+</ctrl-panel>
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
