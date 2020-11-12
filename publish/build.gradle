@@ -1,0 +1,33 @@
+
+task updateBackend() {
+    dependsOn project(':backend').getTasksByName('build', false)
+    doLast {
+        def targetJar = 'code-map.jar'
+        def sourceJar = 'backend-0.0.1-SNAPSHOT.jar'
+
+        project.delete(targetJar)
+
+        project.copy {
+            from new File(project(':backend').projectDir, 'build/libs/' + sourceJar)
+            into project.projectDir
+            rename sourceJar, targetJar
+        }
+    }
+}
+task updateFrontend {
+    dependsOn project(':frontend').getTasksByName('build', false)
+    doLast {
+        def staticFileDir = 'public'
+        project.delete(project.file(staticFileDir))
+
+        project.copy {
+            from new File(project(':frontend').projectDir, 'dist')
+            into project.file(staticFileDir)
+        }
+    }
+}
+task build {
+    dependsOn updateBackend
+    dependsOn updateFrontend
+}
+

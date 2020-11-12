@@ -1,1 +1,4 @@
 rootProject.name = 'CodeMap'
+include('frontend')
+include('backend')
+include('publish')
