@@ -12,26 +12,24 @@
       </a>
     </div>
     <ul nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+      <li nz-submenu nzOpen nzTitle="Workspaces" nzIcon="folder-open">
         <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
+          <li nz-submenu nzOpen nzTitle="My Workspace" nzIcon="dashboard">
+            <ul>
+              <li nz-menu-item nzMatchRouter>
+                <i nz-icon nzType="radar-chart" nzTheme="outline"></i>
+                <a routerLink="/welcome">View</a>
+              </li>
+              <li nz-menu-item nzMatchRouter>
+                <i nz-icon nzType="setting" nzTheme="outline"></i>
+                <a routerLink="/welcome">Settings</a>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
-      </li>
+      <a nz-menu-item nzMatchRouter routerLink="/welcome"><i nz-icon nzType="form" nzTheme="outline"></i>New Workspace</a>
+      <a nz-menu-item nzMatchRouter routerLink="/welcome"><i nz-icon nzType="hdd" nzTheme="outline"></i>Manage Libs</a>
     </ul>
   </nz-sider>
   <nz-layout>
