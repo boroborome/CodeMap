@@ -38,7 +38,7 @@ public class CodeMapApplication {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "com.happy3w.code-map.cmdline-mode", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(name = "code-map.cmdline-mode", havingValue = "true", matchIfMissing = true)
     public CommandStarter commandStarter() {
         return new CommandStarter();
     }

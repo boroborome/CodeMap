@@ -29,7 +29,7 @@ public class CmWorkspaceController {
 
 
     @ResponseBody
-    @PostMapping(headers = "cmd=query-all")
+    @PostMapping(headers = "cmd=new-workspace")
     public MessageResponse<CmWorkspace> createWorkspace(@RequestBody CmWorkspace newWorkspace) {
         CmWorkspace allWorkspaces = cmWorkspaceService.createWorkspaces(newWorkspace);
         return MessageResponse.fromData(allWorkspaces);

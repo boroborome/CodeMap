@@ -1,4 +1,2 @@
-com:
-  happy3w:
-    code-map:
-      cmdline-mode: false
+code-map:
+  cmdline-mode: false

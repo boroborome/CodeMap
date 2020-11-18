@@ -5,7 +5,6 @@ import com.happy3w.persistence.core.filter.impl.StringEqualFilter;
 import com.happy3w.persistence.es.EsAssistant;
 import com.happy3w.toolkits.message.MessageRecorderException;
 import com.happy3w.toolkits.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -16,8 +15,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class CmWorkspaceService {
-    @Autowired
-    private EsAssistant esAssistant;
+    private final EsAssistant esAssistant;
+
+    public CmWorkspaceService(EsAssistant esAssistant) {
+        this.esAssistant = esAssistant;
+    }
 
     public List<CmWorkspace> queryAllWorkspaces() {
         return esAssistant.queryStream(CmWorkspace.class, Collections.emptyList(), null)
