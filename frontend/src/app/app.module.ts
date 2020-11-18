@@ -14,12 +14,14 @@ import { zh_CN } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import {NzMessageModule} from "ng-zorro-antd/message";
+import { NewWorkspaceComponent } from './pages/new-workspace/new-workspace.component';
 
 registerLocaleData(zh);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NewWorkspaceComponent
   ],
   imports: [
     BrowserModule,
