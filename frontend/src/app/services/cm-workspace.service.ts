@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiService} from "./api.service";
 import {Observable} from "rxjs";
 import {CmWorkspace} from "../model/cm-workspace";
+import {MessageResponse} from "../model/message-response";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class CmWorkspaceService {
     return this.api.cmApi(`/workspace/${relativeUrl}`);
   }
 
-  queryAllWorkspaces(): Observable<CmWorkspace[]> {
+  queryAllWorkspaces(): Observable<MessageResponse<CmWorkspace[]>> {
     // @ts-ignore
     return this.http.post(this.url(''),
       "{}",
@@ -29,7 +30,7 @@ export class CmWorkspaceService {
       });
   }
 
-  newWorkspaces(woarkspace: CmWorkspace): Observable<CmWorkspace> {
+  newWorkspaces(woarkspace: CmWorkspace): Observable<MessageResponse<CmWorkspace>> {
     // @ts-ignore
     return this.http.post(this.url(''),
       woarkspace,

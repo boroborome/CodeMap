@@ -25,8 +25,8 @@ export class AppComponent implements OnInit {
 
   private reloadWorkspaces() {
     this.workSpaceService.queryAllWorkspaces()
-      .subscribe(response => {
-        const mr = MessageResponse.from(response);
+      .subscribe(messageResponse => {
+        const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
         if (mr.isSuccess()) {
           this.workspaces = mr.data;
         } else {
