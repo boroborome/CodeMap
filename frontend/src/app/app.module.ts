@@ -15,13 +15,19 @@ import { registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import {NzMessageModule} from "ng-zorro-antd/message";
 import { NewWorkspaceComponent } from './pages/new-workspace/new-workspace.component';
+import { ManageLibsComponent } from './pages/manage-libs/manage-libs.component';
+import { WorkspaceViewComponent } from './pages/workspace-view/workspace-view.component';
+import { WorkspaceSettingsComponent } from './pages/workspace-settings/workspace-settings.component';
 
 registerLocaleData(zh);
 
 @NgModule({
   declarations: [
     AppComponent,
-    NewWorkspaceComponent
+    NewWorkspaceComponent,
+    ManageLibsComponent,
+    WorkspaceViewComponent,
+    WorkspaceSettingsComponent
   ],
   imports: [
     BrowserModule,
