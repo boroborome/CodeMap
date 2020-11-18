@@ -37,7 +37,7 @@ export class CmWorkspaceService {
       {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
-          'cmd': 'create'
+          'cmd': 'new-workspace'
         })
       });
   }

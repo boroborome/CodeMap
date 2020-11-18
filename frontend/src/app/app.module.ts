@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -18,6 +18,9 @@ import { NewWorkspaceComponent } from './pages/new-workspace/new-workspace.compo
 import { ManageLibsComponent } from './pages/manage-libs/manage-libs.component';
 import { WorkspaceViewComponent } from './pages/workspace-view/workspace-view.component';
 import { WorkspaceSettingsComponent } from './pages/workspace-settings/workspace-settings.component';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import {NzInputModule} from "ng-zorro-antd/input";
+import {NzUploadModule} from "ng-zorro-antd/upload";
 
 registerLocaleData(zh);
 
@@ -38,7 +41,11 @@ registerLocaleData(zh);
     NzMessageModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzUploadModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }],
   bootstrap: [AppComponent]

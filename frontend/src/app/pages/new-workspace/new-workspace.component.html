@@ -1,1 +1,20 @@
-<p>new-workspace works!</p>
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <input nz-input formControlName="name" id="name" [(ngModel)]="newWorkspaceName"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileList">Files</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="fileList" id="fileList" nz-input placeholder="File or Dir contains jar"
+                nzAutosize [(ngModel)]="newWorkspaceFileRange"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <button nz-button nzType="primary">Create</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
