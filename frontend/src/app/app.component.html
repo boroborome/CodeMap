@@ -14,22 +14,24 @@
     <ul nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen nzTitle="Workspaces" nzIcon="folder-open">
         <ul>
-          <li nz-submenu nzOpen nzTitle="My Workspace" nzIcon="dashboard">
+          <li *ngFor="let ws of workspaces"
+              nz-submenu nzOpen nzTitle="{{ws.name}}" nzIcon="dashboard">
             <ul>
               <li nz-menu-item nzMatchRouter>
                 <i nz-icon nzType="radar-chart" nzTheme="outline"></i>
-                <a routerLink="/welcome">View</a>
+                <a routerLink="/workspace/view/{{ws.name}}">View</a>
               </li>
               <li nz-menu-item nzMatchRouter>
                 <i nz-icon nzType="setting" nzTheme="outline"></i>
-                <a routerLink="/welcome">Settings</a>
+                <a routerLink="/workspace/settings/{{ws.name}}">Settings</a>
               </li>
             </ul>
           </li>
         </ul>
       </li>
-      <a nz-menu-item nzMatchRouter routerLink="/welcome"><i nz-icon nzType="form" nzTheme="outline"></i>New Workspace</a>
-      <a nz-menu-item nzMatchRouter routerLink="/welcome"><i nz-icon nzType="hdd" nzTheme="outline"></i>Manage Libs</a>
+      <a nz-menu-item nzMatchRouter routerLink="/workspace/new"><i nz-icon nzType="form" nzTheme="outline"></i>New
+        Workspace</a>
+      <a nz-menu-item nzMatchRouter routerLink="/libs"><i nz-icon nzType="hdd" nzTheme="outline"></i>Manage Libs</a>
     </ul>
   </nz-sider>
   <nz-layout>
