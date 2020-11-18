@@ -28,6 +28,7 @@ dependencies {
 	implementation 'com.happy3w:persistence-es:0.0.1'
 
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

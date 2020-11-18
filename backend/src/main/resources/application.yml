@@ -7,6 +7,7 @@ spring:
       max-request-size: 20MB
 
 code-map:
+  service-path: /api
   es:
     hosts: 127.0.0.1:9300
     cluster-name: docker-cluster
