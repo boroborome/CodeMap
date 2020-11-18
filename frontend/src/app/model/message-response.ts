@@ -9,16 +9,17 @@ export class MessageResponse<T> {
     return mr;
   }
 
-  private getErrors() : string[] {
+  private getErrors(): string[] {
     if (this.msgs instanceof Map) {
       return this.msgs.get("error");
+    } else if (this.msgs == null) {
+      return [];
     } else {
       return this.msgs.error;
     }
   }
 
   isSuccess(): boolean {
-
     const errors: string[] = this.getErrors();
     return errors == null || errors.length == 0;
   }
