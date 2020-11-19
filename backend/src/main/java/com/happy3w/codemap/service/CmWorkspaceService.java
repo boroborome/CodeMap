@@ -49,8 +49,8 @@ public class CmWorkspaceService {
                     MessageFormat.format("Name:{0} is existed.", newWorkspace.getName())
             );
         }
-        // TODO: show return new item id
-        esAssistant.saveData(newWorkspace);
+
+        newWorkspace = esAssistant.saveData(newWorkspace);
         startBackendTask(newWorkspace);
         return newWorkspace;
     }
@@ -64,14 +64,7 @@ public class CmWorkspaceService {
     }
 
     public CmWorkspace querySingle(String id) {
-        Optional<CmWorkspace> resultOp = esAssistant.queryStream(CmWorkspace.class,
-                Arrays.asList(new StringEqualFilter("id", id)), null)
-                .findFirst();
-        if (resultOp.isPresent()) {
-            return resultOp.get();
-        } else {
-            return new CmWorkspace();
-        }
+        return esAssistant.queryById(CmWorkspace.class, id);
     }
 
     public CmWorkspace deleteSingle(String id) {
