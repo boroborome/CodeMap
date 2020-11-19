@@ -75,14 +75,12 @@ public class CmWorkspaceService {
     }
 
     public CmWorkspace deleteSingle(String id) {
-        Optional<CmWorkspace> resultOp = esAssistant.queryStream(CmWorkspace.class,
-                Arrays.asList(new StringEqualFilter("id", id)), null)
-                .findFirst();
-        if (resultOp.isPresent()) {
-            esAssistant.deleteById(CmWorkspace.class, id);
-            return resultOp.get();
-        } else {
+        CmWorkspace workspace = esAssistant.queryById(CmWorkspace.class, id);
+        if (workspace == null) {
             return new CmWorkspace();
+        } else {
+            esAssistant.deleteById(CmWorkspace.class, id);
+            return workspace;
         }
     }
 }
