@@ -11,8 +11,8 @@ const routes: Routes = [
   { path: 'workspace/new', pathMatch: 'full', component: NewWorkspaceComponent },
   { path: 'manage-libs', pathMatch: 'full', component: ManageLibsComponent },
   { path: 'backend-tasks', pathMatch: 'full', component: BackendTaskComponent },
-  { path: 'workspace/view/:name', pathMatch: 'full', component: WorkspaceViewComponent },
-  { path: 'workspace/settings/:name', pathMatch: 'full', component: WorkspaceSettingsComponent },
+  { path: 'workspace/view/:id', pathMatch: 'full', component: WorkspaceViewComponent },
+  { path: 'workspace/settings/:id', pathMatch: 'full', component: WorkspaceSettingsComponent },
 ];
 
 @NgModule({
