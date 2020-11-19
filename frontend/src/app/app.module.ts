@@ -25,6 +25,8 @@ import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { SuccessResultComponent } from './pages/success-result/success-result.component';
+import { NzResultModule } from 'ng-zorro-antd/result';
 
 registerLocaleData(zh);
 
@@ -35,7 +37,8 @@ registerLocaleData(zh);
     ManageLibsComponent,
     WorkspaceViewComponent,
     WorkspaceSettingsComponent,
-    BackendTaskComponent
+    BackendTaskComponent,
+    SuccessResultComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ registerLocaleData(zh);
     NzCheckboxModule,
     NzInputNumberModule,
     NzModalModule,
+    NzResultModule,
   ],
   providers: [{provide: NZ_I18N, useValue: zh_CN}],
   bootstrap: [AppComponent]

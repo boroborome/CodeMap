@@ -146,6 +146,6 @@ export class WorkspaceSettingsComponent implements OnInit {
 
   private doDeleteWorkspace() {
     this.workSpaceService.deleteSingle(this.id)
-      .subscribe(workspace => null);
+      .subscribe(workspace => this.router.navigate(["success-result"]));
   }
 }
