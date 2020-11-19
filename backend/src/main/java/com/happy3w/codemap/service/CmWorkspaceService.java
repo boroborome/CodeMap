@@ -63,11 +63,23 @@ public class CmWorkspaceService {
         backendTaskService.createTask(task, t -> workspaceAnalyzer.analyze(workspace, task));
     }
 
-    public CmWorkspace querySingle(String name) {
+    public CmWorkspace querySingle(String id) {
         Optional<CmWorkspace> resultOp = esAssistant.queryStream(CmWorkspace.class,
-                Arrays.asList(new StringEqualFilter("name", name)), null)
+                Arrays.asList(new StringEqualFilter("id", id)), null)
                 .findFirst();
         if (resultOp.isPresent()) {
+            return resultOp.get();
+        } else {
+            return new CmWorkspace();
+        }
+    }
+
+    public CmWorkspace deleteSingle(String id) {
+        Optional<CmWorkspace> resultOp = esAssistant.queryStream(CmWorkspace.class,
+                Arrays.asList(new StringEqualFilter("id", id)), null)
+                .findFirst();
+        if (resultOp.isPresent()) {
+            esAssistant.deleteById(CmWorkspace.class, id);
             return resultOp.get();
         } else {
             return new CmWorkspace();

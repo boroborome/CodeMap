@@ -42,4 +42,11 @@ public class CmWorkspaceController {
         CmWorkspace workspace = cmWorkspaceService.querySingle(id);
         return MessageResponse.fromData(workspace);
     }
+
+    @ResponseBody
+    @PostMapping(value = "/{id}", headers = "cmd=delete-single")
+    public MessageResponse<CmWorkspace> deleteSingle(@PathVariable(name = "id") String id) {
+        CmWorkspace workspace = cmWorkspaceService.deleteSingle(id);
+        return MessageResponse.fromData(workspace);
+    }
 }
