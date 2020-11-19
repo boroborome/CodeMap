@@ -41,4 +41,20 @@ export class CmWorkspaceService {
         })
       });
   }
+
+  querySingle(id: string): Observable<MessageResponse<CmWorkspace>> {
+    return this.sendRequest(id,'query-single', {});
+  }
+
+  sendRequest(url: string, cmd: string, params: object): Observable<MessageResponse<object>> {
+    // @ts-ignore
+    return this.http.post(this.url(url),
+      params,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'cmd': cmd
+        })
+      });
+  }
 }
