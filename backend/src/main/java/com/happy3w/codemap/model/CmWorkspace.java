@@ -18,5 +18,6 @@ public class CmWorkspace {
     private int refCount = 2;
     private boolean isDirty;
 
+    private List<String> fileToAnalyze = new ArrayList<>();
     private List<String> fileRanges = new ArrayList<>();
 }

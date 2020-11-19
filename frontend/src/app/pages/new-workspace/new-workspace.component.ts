@@ -11,8 +11,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./new-workspace.component.scss']
 })
 export class NewWorkspaceComponent implements OnInit {
-  newWorkspaceName: string = "New Workspace";
-  newWorkspaceFileRange: string = "";
+  name: string = "New Workspace";
+  fileToAnalyze: string = "";
 
   validateForm!: FormGroup;
   fileList: string;
@@ -28,8 +28,8 @@ export class NewWorkspaceComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     const nw: CmWorkspace = {};
-    nw.name = this.newWorkspaceName;
-    nw.fileRanges = this.newWorkspaceFileRange.split("\n");
+    nw.name = this.name;
+    nw.fileToAnalyze = this.fileToAnalyze.split("\n");
     this.workSpaceService.newWorkspaces(nw)
       .subscribe(workspace => this.router.navigate(["/backend-tasks"]));
   }
@@ -37,7 +37,7 @@ export class NewWorkspaceComponent implements OnInit {
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
-      fileList: [null, [Validators.required]],
+      fileToAnalyze: [null, [Validators.required]],
     });
   }
 }

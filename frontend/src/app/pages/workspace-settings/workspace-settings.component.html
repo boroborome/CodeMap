@@ -39,9 +39,16 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileToAnalyze">File To Analyze</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="fileToAnalyze" nz-input placeholder="Some local file or dir to be analyzed"
+                nzAutosize [(ngModel)]="fileToAnalyze"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileRanges">File Ranges</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
-      <textarea formControlName="fileRanges" nz-input placeholder="Some thing to filter out"
+      <textarea formControlName="fileRanges" nz-input placeholder="Some jar analyzed and want to be include in to this workspace."
                 nzAutosize [(ngModel)]="fileRanges"></textarea>
     </nz-form-control>
   </nz-form-item>

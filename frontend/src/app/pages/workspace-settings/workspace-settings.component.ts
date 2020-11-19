@@ -30,6 +30,7 @@ export class WorkspaceSettingsComponent implements OnInit {
 
   selected?: string;
   refCount?: number;
+  fileToAnalyze?: string;
   fileRanges?: string;
 
   validateForm!: FormGroup;
@@ -50,6 +51,7 @@ export class WorkspaceSettingsComponent implements OnInit {
       relationTypes: [null, []],
       selected: [null, []],
       refCount: [null, []],
+      fileToAnalyze: [null, []],
       fileRanges: [null, []],
     });
     this.route.params.subscribe(params => {

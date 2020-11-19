@@ -6,5 +6,6 @@ export class CmWorkspace {
   relationTypes?: string[];
   selected?: string[];
   refCount?: number;
+  fileToAnalyze?: string[];
   fileRanges?: string[];
 }
