@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,5 +59,16 @@ public class CmWorkspaceService {
         BackendTask task = new BackendTask();
         task.setRemark("Analyze workspace:" + workspace.getName());
         backendTaskService.createTask(task, t -> workspaceAnalyzer.analyze(workspace, task));
+    }
+
+    public CmWorkspace querySingle(String name) {
+        Optional<CmWorkspace> resultOp = esAssistant.queryStream(CmWorkspace.class,
+                Arrays.asList(new StringEqualFilter("name", name)), null)
+                .findFirst();
+        if (resultOp.isPresent()) {
+            return resultOp.get();
+        } else {
+            return new CmWorkspace();
+        }
     }
 }

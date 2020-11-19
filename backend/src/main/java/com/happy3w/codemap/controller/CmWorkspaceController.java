@@ -4,6 +4,7 @@ import com.happy3w.codemap.model.CmWorkspace;
 import com.happy3w.codemap.service.CmWorkspaceService;
 import com.happy3w.toolkits.message.MessageResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,14 @@ public class CmWorkspaceController {
     @ResponseBody
     @PostMapping(headers = "cmd=new-workspace")
     public MessageResponse<CmWorkspace> createWorkspace(@RequestBody CmWorkspace newWorkspace) {
-        CmWorkspace allWorkspaces = cmWorkspaceService.createWorkspaces(newWorkspace);
-        return MessageResponse.fromData(allWorkspaces);
+        CmWorkspace workspace = cmWorkspaceService.createWorkspaces(newWorkspace);
+        return MessageResponse.fromData(workspace);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/{name}", headers = "cmd=query-single")
+    public MessageResponse<CmWorkspace> querySingle(@PathVariable(name = "name") String name) {
+        CmWorkspace workspace = cmWorkspaceService.querySingle(name);
+        return MessageResponse.fromData(workspace);
     }
 }
