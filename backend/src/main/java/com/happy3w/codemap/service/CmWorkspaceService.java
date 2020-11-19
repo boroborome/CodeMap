@@ -37,7 +37,6 @@ public class CmWorkspaceService {
         if (StringUtils.isEmpty(newWorkspace.getName())) {
             throw new MessageRecorderException("Name is required in Workspace.");
         }
-        newWorkspace.setId(newWorkspace.getName());
         newWorkspace.setDirty(true);
         boolean nameExisted = esAssistant.queryStream(
                 CmWorkspace.class,
@@ -50,6 +49,7 @@ public class CmWorkspaceService {
                     MessageFormat.format("Name:{0} is existed.", newWorkspace.getName())
             );
         }
+        // TODO: show return new item id
         esAssistant.saveData(newWorkspace);
         startBackendTask(newWorkspace);
         return newWorkspace;
@@ -57,6 +57,8 @@ public class CmWorkspaceService {
 
     private void startBackendTask(CmWorkspace workspace) {
         BackendTask task = new BackendTask();
+        task.setRefId(workspace.getId());
+        task.setRefName(workspace.getName());
         task.setRemark("Analyze workspace:" + workspace.getName());
         backendTaskService.createTask(task, t -> workspaceAnalyzer.analyze(workspace, task));
     }

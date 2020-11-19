@@ -37,9 +37,9 @@ public class CmWorkspaceController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{name}", headers = "cmd=query-single")
-    public MessageResponse<CmWorkspace> querySingle(@PathVariable(name = "name") String name) {
-        CmWorkspace workspace = cmWorkspaceService.querySingle(name);
+    @PostMapping(value = "/{id}", headers = "cmd=query-single")
+    public MessageResponse<CmWorkspace> querySingle(@PathVariable(name = "id") String id) {
+        CmWorkspace workspace = cmWorkspaceService.querySingle(id);
         return MessageResponse.fromData(workspace);
     }
 }

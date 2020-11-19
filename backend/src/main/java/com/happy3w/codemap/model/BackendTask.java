@@ -18,5 +18,7 @@ public class BackendTask {
     private String id;
     private String status = Status.waiting;
     private String remark;
+    private String refId;
+    private String refName;
     private Date startTime;
 }
