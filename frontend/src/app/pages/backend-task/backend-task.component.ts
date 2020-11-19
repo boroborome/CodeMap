@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {NzMessageService} from "ng-zorro-antd/message";
+import {Router} from "@angular/router";
+import {BackendTaskService} from "../../services/backend-task.service";
+import {BackendTask} from "../../model/backend-task";
+import {MessageResponse} from "../../model/message-response";
 
 @Component({
   selector: 'app-backend-task',
@@ -6,10 +11,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./backend-task.component.scss']
 })
 export class BackendTaskComponent implements OnInit {
+  listOfData: BackendTask[] = [];
 
-  constructor() { }
+  constructor(private backendTaskService: BackendTaskService,
+              private message: NzMessageService,
+              private router: Router,
+              ) { }
 
   ngOnInit(): void {
+    this.reloadTasks();
   }
-
+  private reloadTasks() {
+    this.backendTaskService.queryAllTasks()
+      .subscribe(messageResponse => {
+        const mr: MessageResponse<BackendTask[]> = MessageResponse.from(messageResponse);
+        if (mr.isSuccess()) {
+          this.listOfData = mr.data;
+        } else {
+          this.message.create('error', mr.errorMessage());
+        }
+      });
+  }
 }

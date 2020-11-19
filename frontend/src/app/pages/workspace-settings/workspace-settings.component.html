@@ -1,1 +1,54 @@
-<p>workspace-settings works for {{name}}!</p>
+<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <input nz-input formControlName="name" id="name" [(ngModel)]="name"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="includes">Includes</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="includes" nz-input placeholder="Some thing to filter in"
+                nzAutosize [(ngModel)]="includes"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="excludes">Excludes</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="excludes" nz-input placeholder="Some thing to filter out"
+                nzAutosize [(ngModel)]="excludes"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relationTypes">Relation Types</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <nz-checkbox-group formControlName="relationTypes" [(ngModel)]="relationTypes"></nz-checkbox-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="selected">Selected Items</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <textarea formControlName="selected" nz-input placeholder="Some thing must show"
+                nzAutosize [(ngModel)]="selected"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="refCount">Reference count</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <nz-input-number formControlName="refCount" id="refCount" [(ngModel)]="refCount" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileRanges">File Ranges</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="fileRanges" nz-input placeholder="Some thing to filter out"
+                nzAutosize [(ngModel)]="fileRanges"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <button nz-button nzType="primary">Update</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
