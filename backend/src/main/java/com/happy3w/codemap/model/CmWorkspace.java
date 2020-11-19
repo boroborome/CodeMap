@@ -16,6 +16,7 @@ public class CmWorkspace {
     private List<String> relationTypes = new ArrayList<>();
     private List<String> selected = new ArrayList<>();
     private int refCount = 2;
+    private boolean isDirty;
 
     private List<String> fileRanges = new ArrayList<>();
 }

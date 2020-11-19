@@ -37,6 +37,7 @@ public class CmWorkspaceService {
             throw new MessageRecorderException("Name is required in Workspace.");
         }
         newWorkspace.setId(newWorkspace.getName());
+        newWorkspace.setDirty(true);
         boolean nameExisted = esAssistant.queryStream(
                 CmWorkspace.class,
                 Arrays.asList(new StringEqualFilter("name", newWorkspace.getName())),
