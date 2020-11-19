@@ -21,6 +21,7 @@ import { WorkspaceSettingsComponent } from './pages/workspace-settings/workspace
 import { NzFormModule } from 'ng-zorro-antd/form';
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzUploadModule} from "ng-zorro-antd/upload";
+import { BackendTaskComponent } from './pages/backend-task/backend-task.component';
 
 registerLocaleData(zh);
 
@@ -30,7 +31,8 @@ registerLocaleData(zh);
     NewWorkspaceComponent,
     ManageLibsComponent,
     WorkspaceViewComponent,
-    WorkspaceSettingsComponent
+    WorkspaceSettingsComponent,
+    BackendTaskComponent
   ],
   imports: [
     BrowserModule,

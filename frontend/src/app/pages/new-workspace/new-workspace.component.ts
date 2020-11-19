@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CmWorkspaceService} from "../../services/cm-workspace.service";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CmWorkspace} from "../../model/cm-workspace";
 import {MessageResponse} from "../../model/message-response";
 import {Router} from "@angular/router";
@@ -35,7 +35,7 @@ export class NewWorkspaceComponent implements OnInit {
       .subscribe(messageResponse => {
         const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
         if (mr.isSuccess()) {
-          this.router.navigate(["/workspace/view", nw.name]);
+          this.router.navigate(["/backend-tasks"]);
         } else {
           this.message.create('error', mr.errorMessage());
         }
