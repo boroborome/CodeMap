@@ -1,5 +1,7 @@
 package com.happy3w.codemap.service;
 
+import com.happy3w.codemap.component.WorkspaceAnalyzer;
+import com.happy3w.codemap.model.BackendTask;
 import com.happy3w.codemap.model.CmWorkspace;
 import com.happy3w.persistence.core.filter.impl.StringEqualFilter;
 import com.happy3w.persistence.es.EsAssistant;
@@ -16,9 +18,13 @@ import java.util.stream.Collectors;
 @Service
 public class CmWorkspaceService {
     private final EsAssistant esAssistant;
+    private final BackendTaskService backendTaskService;
+    private final WorkspaceAnalyzer workspaceAnalyzer;
 
-    public CmWorkspaceService(EsAssistant esAssistant) {
+    public CmWorkspaceService(EsAssistant esAssistant, BackendTaskService backendTaskService, WorkspaceAnalyzer workspaceAnalyzer) {
         this.esAssistant = esAssistant;
+        this.backendTaskService = backendTaskService;
+        this.workspaceAnalyzer = workspaceAnalyzer;
     }
 
     public List<CmWorkspace> queryAllWorkspaces() {
@@ -43,6 +49,13 @@ public class CmWorkspaceService {
             );
         }
         esAssistant.saveData(newWorkspace);
+        startBackendTask(newWorkspace);
         return newWorkspace;
+    }
+
+    private void startBackendTask(CmWorkspace workspace) {
+        BackendTask task = new BackendTask();
+        task.setRemark("Analyze workspace:" + workspace.getName());
+        backendTaskService.createTask(task, t -> workspaceAnalyzer.analyze(workspace, task));
     }
 }
