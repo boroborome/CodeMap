@@ -3,7 +3,6 @@ import {CmWorkspaceService} from "../../services/cm-workspace.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CmWorkspace} from "../../model/cm-workspace";
-import {MessageResponse} from "../../model/message-response";
 import {Router} from "@angular/router";
 
 @Component({
@@ -32,14 +31,7 @@ export class NewWorkspaceComponent implements OnInit {
     nw.name = this.newWorkspaceName;
     nw.fileRanges = this.newWorkspaceFileRange.split("\n");
     this.workSpaceService.newWorkspaces(nw)
-      .subscribe(messageResponse => {
-        const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
-        if (mr.isSuccess()) {
-          this.router.navigate(["/backend-tasks"]);
-        } else {
-          this.message.create('error', mr.errorMessage());
-        }
-      });
+      .subscribe(workspace => this.router.navigate(["/backend-tasks"]));
   }
 
   ngOnInit(): void {

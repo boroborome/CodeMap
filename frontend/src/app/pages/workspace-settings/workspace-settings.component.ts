@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CmWorkspaceService} from "../../services/cm-workspace.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {CmWorkspace} from "../../model/cm-workspace";
-import {MessageResponse} from "../../model/message-response";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 class CheckItem {
   label: string;
@@ -17,6 +17,7 @@ class CheckItem {
   styleUrls: ['./workspace-settings.component.scss']
 })
 export class WorkspaceSettingsComponent implements OnInit {
+  id: string;
   name?: string;
   includes?: string;
   excludes?: string;
@@ -38,6 +39,7 @@ export class WorkspaceSettingsComponent implements OnInit {
               private message: NzMessageService,
               private router: Router,
               private route: ActivatedRoute,
+              private modal: NzModalService,
   ) {}
 
   ngOnInit(): void {
@@ -53,14 +55,7 @@ export class WorkspaceSettingsComponent implements OnInit {
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.workSpaceService.querySingle(id)
-        .subscribe(messageResponse => {
-          const mr: MessageResponse<CmWorkspace> = MessageResponse.from(messageResponse);
-          if (mr.isSuccess()) {
-            this.showWorkspace(mr.data);
-          } else {
-            this.message.create('error', mr.errorMessage());
-          }
-        });
+        .subscribe(workspace => this.showWorkspace(workspace));
     });
   }
 
@@ -84,6 +79,7 @@ export class WorkspaceSettingsComponent implements OnInit {
   }
 
   private showWorkspace(cw: CmWorkspace) {
+    this.id = cw.id;
     this.name = cw.name;
 
     this.includes = this.connectStr(cw.includes);
@@ -121,7 +117,7 @@ export class WorkspaceSettingsComponent implements OnInit {
 
   private collectCwFromUi(): CmWorkspace {
     const cw: CmWorkspace = new CmWorkspace();
-    cw.id = this.name;
+    cw.id = this.id;
     cw.name = this.name;
     cw.includes = this.splitStr(this.includes);
     cw.excludes = this.splitStr(this.excludes);
@@ -135,5 +131,21 @@ export class WorkspaceSettingsComponent implements OnInit {
   private collectRelationTypes(): string[] {
     return this.relationTypes.filter(item => item.checked)
       .map(item => item.value);
+  }
+
+  deleteWorkspace() {
+    this.modal.confirm({
+      nzTitle: 'Are you sure delete this workspace?',
+      nzContent: `Workspace Name: ${this.name}`,
+      nzOkText: 'Yes',
+      nzOkType: 'danger',
+      nzOnOk: () => this.doDeleteWorkspace(),
+      nzCancelText: 'No'
+    });
+  }
+
+  private doDeleteWorkspace() {
+    this.workSpaceService.deleteSingle(this.id)
+      .subscribe(workspace => null);
   }
 }

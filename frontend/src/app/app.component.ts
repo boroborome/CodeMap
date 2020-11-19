@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CmWorkspaceService} from "./services/cm-workspace.service";
 import {CmWorkspace} from "./model/cm-workspace";
-import {MessageResponse} from "./model/message-response";
 import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
@@ -11,7 +10,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 })
 export class AppComponent implements OnInit {
   isCollapsed = false;
-  workspaces : CmWorkspace[] = [];
+  workspaces : CmWorkspace[];
 
   constructor(private workSpaceService: CmWorkspaceService,
               private message: NzMessageService,
@@ -25,13 +24,6 @@ export class AppComponent implements OnInit {
 
   private reloadWorkspaces() {
     this.workSpaceService.queryAllWorkspaces()
-      .subscribe(messageResponse => {
-        const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
-        if (mr.isSuccess()) {
-          this.workspaces = mr.data;
-        } else {
-          this.message.create('error', mr.errorMessage());
-        }
-      });
+      .subscribe(workspaces => this.workspaces = workspaces);
   }
 }
