@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ApiService} from "./api.service";
-import {AsyncSubject, Observable} from "rxjs";
+import {AsyncSubject, BehaviorSubject, Observable} from "rxjs";
 import {CmWorkspace} from "../model/cm-workspace";
 import {MessageResponse} from "../model/message-response";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -11,7 +11,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 })
 export class CmWorkspaceService {
   cache: CmWorkspace[] = null;
-  cacheSubject: AsyncSubject<CmWorkspace[]> = new AsyncSubject();
+  cacheSubject: BehaviorSubject<CmWorkspace[]> = new BehaviorSubject([]);
 
   constructor(private http: HttpClient,
               private api: ApiService,
@@ -37,7 +37,6 @@ export class CmWorkspaceService {
       if (mr.isSuccess()) {
         this.cache = mr.data;
         this.cacheSubject.next(this.cache);
-        this.cacheSubject.complete();
       } else {
         this.message.create('error', mr.errorMessage());
       }
@@ -63,7 +62,6 @@ export class CmWorkspaceService {
         subject.complete();
 
         this.cacheSubject.next(this.cache);
-        this.cacheSubject.complete();
       } else {
         this.message.create('error', mr.errorMessage());
       }
@@ -101,7 +99,6 @@ export class CmWorkspaceService {
         subject.complete();
 
         this.cacheSubject.next(this.cache);
-        this.cacheSubject.complete();
       } else {
         this.message.create('error', mr.errorMessage());
       }
