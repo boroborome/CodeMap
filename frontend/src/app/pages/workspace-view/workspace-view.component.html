@@ -1,1 +1,64 @@
-<p>workspace-view works for {{name}}!</p>
+<nz-layout>
+  <nz-header>
+    <div nz-form [formGroup]="validateForm" class="ant-advanced-search-form">
+      <div nz-row [nzGutter]="24" [hidden]="isCollapse">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item class="register-area">
+            <nz-form-label [nzSm]="4" nzFor="includes">Includes</nz-form-label>
+            <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="includes" nz-input placeholder="Some thing to filter in"
+                nzAutosize [(ngModel)]="includes"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item class="register-area">
+            <nz-form-label [nzSm]="4" nzFor="excludes">Excludes</nz-form-label>
+            <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="excludes" nz-input placeholder="Some thing to filter out"
+                nzAutosize [(ngModel)]="excludes"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" nzRequired nzFor="refCount">Ref count</nz-form-label>
+            <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
+              <nz-input-number formControlName="refCount" id="refCount" [(ngModel)]="refCount" [nzMin]="1" [nzMax]="10"
+                               [nzStep]="1"></nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-label [nzSm]="4" nzRequired nzFor="relationTypes">Relation</nz-form-label>
+            <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
+              <nz-checkbox-group formControlName="relationTypes" [(ngModel)]="relationTypes"></nz-checkbox-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" class="search-area">
+          <button nz-button [nzType]="'primary'">Search</button>
+          <button nz-button (click)="resetForm()">Save Config</button>
+          <button nz-button (click)="resetForm()">Reset</button>
+          <a class="collapse" (click)="toggleCollapse()">
+            Collapse
+            <i nz-icon [nzType]="isCollapse ? 'down' : 'up'"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nz-header>
+  <nz-content>
+    <div class="search-result-list">
+      Search Result List
+    </div>
+  </nz-content>
+</nz-layout>
+
+

@@ -24,9 +24,10 @@ import {BackendTaskComponent} from './pages/backend-task/backend-task.component'
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {NzCheckboxModule} from "ng-zorro-antd/checkbox";
 import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { SuccessResultComponent } from './pages/success-result/success-result.component';
-import { NzResultModule } from 'ng-zorro-antd/result';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {SuccessResultComponent} from './pages/success-result/success-result.component';
+import {NzResultModule} from 'ng-zorro-antd/result';
+import {NzButtonModule} from "ng-zorro-antd/button";
 
 registerLocaleData(zh);
 
@@ -59,6 +60,7 @@ registerLocaleData(zh);
     NzInputNumberModule,
     NzModalModule,
     NzResultModule,
+    NzButtonModule,
   ],
   providers: [{provide: NZ_I18N, useValue: zh_CN}],
   bootstrap: [AppComponent]
