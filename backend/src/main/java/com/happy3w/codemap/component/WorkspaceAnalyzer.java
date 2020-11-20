@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Component
@@ -25,24 +27,33 @@ public class WorkspaceAnalyzer {
     }
 
     public void analyze(CmWorkspace newWorkspace, BackendTask task) {
-        newWorkspace.getFileToAnalyze().stream()
+        List<String> jarFiles = new ArrayList<>();
+        Stream<ClassRelation> relationStream = newWorkspace.getFileToAnalyze().stream()
                 .map(File::new)
                 .filter(File::exists)
                 .flatMap(FileUtils::enumerateFiles)
                 .filter(file -> file.getName().endsWith(".jar"))
-                .forEach(this::analyzeJarFile);
+                .peek(file -> task.setRemark("Analyzing file:" + file.getName()))
+                .peek(file -> jarFiles.add(file.getName()))
+                .flatMap(this::analyzeJarFile);
+        esAssistant.saveStream(relationStream);
+        task.setRemark("All finished");
+
+        newWorkspace.getFileToAnalyze().clear();
+        newWorkspace.getFileRanges().addAll(jarFiles);
+
+        esAssistant.saveData(newWorkspace);
     }
 
-    private void analyzeJarFile(File jarFile) {
+    private Stream<ClassRelation> analyzeJarFile(File jarFile) {
         String shortName = jarFile.getName();
-        Stream<ClassRelation> relations = JarLoader.listAllClassesBytes(jarFile.getAbsolutePath())
+        return JarLoader.listAllClassesBytes(jarFile.getAbsolutePath())
                 .map(this::createClassReader)
                 .flatMap(relationAnalyzer::collectRelations)
                 .peek(relation -> {
                     relation.setJarFile(shortName);
                     relation.initId();
                 });
-        esAssistant.saveStream(relations);
     }
 
     private ClassReader createClassReader(InputStream inputStream) {

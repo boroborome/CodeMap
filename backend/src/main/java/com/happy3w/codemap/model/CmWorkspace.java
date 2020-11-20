@@ -4,20 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 public class CmWorkspace {
     private String id;
     private String name;
-    private List<String> includes = new ArrayList<>();
-    private List<String> excludes = new ArrayList<>();
-    private List<String> relationTypes = new ArrayList<>();
-    private List<String> selected = new ArrayList<>();
+    private Set<String> includes = new HashSet<>();
+    private Set<String> excludes = new HashSet<>();
+    private Set<String> relationTypes = new HashSet<>();
+    private Set<String> selected = new HashSet<>();
     private int refCount = 2;
     private boolean isDirty;
 
-    private List<String> fileToAnalyze = new ArrayList<>();
-    private List<String> fileRanges = new ArrayList<>();
+    private Set<String> fileToAnalyze = new HashSet<>();
+    private Set<String> fileRanges = new HashSet<>();
 }
