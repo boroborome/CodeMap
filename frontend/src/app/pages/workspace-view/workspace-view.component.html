@@ -7,7 +7,7 @@
             <nz-form-label [nzSm]="4" nzFor="includes">Includes</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
       <textarea formControlName="includes" nz-input placeholder="Some thing to filter in"
-                nzAutosize [(ngModel)]="includes"></textarea>
+                nzAutosize [(ngModel)]="workspaceUi.includes"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -17,7 +17,7 @@
             <nz-form-label [nzSm]="4" nzFor="excludes">Excludes</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
       <textarea formControlName="excludes" nz-input placeholder="Some thing to filter out"
-                nzAutosize [(ngModel)]="excludes"></textarea>
+                nzAutosize [(ngModel)]="workspaceUi.excludes"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -27,7 +27,7 @@
             <nz-form-label [nzSm]="4" nzFor="highlight">Highlight</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
       <textarea formControlName="highlight" nz-input placeholder="Some node to highlight"
-                nzAutosize [(ngModel)]="highlight"></textarea>
+                nzAutosize [(ngModel)]="workspaceUi.highlight"></textarea>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -36,7 +36,7 @@
           <nz-form-item>
             <nz-form-label [nzSm]="4" nzRequired nzFor="refCount">Ref count</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
-              <nz-input-number formControlName="refCount" id="refCount" [(ngModel)]="refCount" [nzMin]="1" [nzMax]="10"
+              <nz-input-number formControlName="refCount" id="refCount" [(ngModel)]="workspaceUi.refCount" [nzMin]="1" [nzMax]="10"
                                [nzStep]="1"></nz-input-number>
             </nz-form-control>
           </nz-form-item>
@@ -46,7 +46,7 @@
           <nz-form-item>
             <nz-form-label [nzSm]="4" nzRequired nzFor="relationTypes">Relation</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
-              <nz-checkbox-group formControlName="relationTypes" [(ngModel)]="relationTypes"></nz-checkbox-group>
+              <nz-checkbox-group formControlName="relationTypes" [(ngModel)]="workspaceUi.relationTypes"></nz-checkbox-group>
             </nz-form-control>
           </nz-form-item>
         </div>

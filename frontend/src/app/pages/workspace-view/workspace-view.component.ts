@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {CmWorkspaceUi} from "../../model/cm-workspace-ui";
 
 class CheckItem {
   label: string;
@@ -14,22 +15,7 @@ class CheckItem {
   styleUrls: ['./workspace-view.component.scss']
 })
 export class WorkspaceViewComponent implements OnInit {
-  id: string;
-  name?: string;
-  includes?: string;
-  excludes?: string;
-  highlight?: string;
-  relationTypes: CheckItem[] = [
-    { label: 'inherit', value: 'inherit', checked: true },
-    { label: 'member', value: 'member', checked: true },
-    { label: 'reference', value: 'reference', checked: true },
-    { label: 'other', value: 'other', checked: true },
-  ];
-
-  selected?: string;
-  refCount?: number;
-  fileToAnalyze?: string;
-  fileRanges?: string;
+  workspaceUi: CmWorkspaceUi = new CmWorkspaceUi();
 
   isCollapse = false;
   validateForm!: FormGroup;
