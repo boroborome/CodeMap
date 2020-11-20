@@ -69,6 +69,22 @@ export class CmWorkspaceService {
     return subject;
   }
 
+
+  updateWorkspaces(workspace: CmWorkspace): Observable<CmWorkspace> {
+    const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
+    this.sendRequest<CmWorkspace>(workspace.id, 'update-single', workspace)
+      .subscribe(ws => {
+        subject.next(ws);
+
+        const index = this.cache.findIndex(item => item.id == ws.id);
+        this.cache[index] = ws;
+        subject.complete();
+
+        this.cacheSubject.next(this.cache);
+      });
+    return subject;
+  }
+
   querySingle(id: string): Observable<CmWorkspace> {
     if (this.cache == null) {
       const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
@@ -89,33 +105,39 @@ export class CmWorkspaceService {
 
   deleteSingle(id: string): Observable<CmWorkspace> {
     const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
-    this.sendRequest(id, 'delete-single', {})
-      .subscribe(messageResponse => {
-      const mr: MessageResponse<CmWorkspace> = MessageResponse.from(messageResponse);
-      if (mr.isSuccess()) {
-        this.removeItemWithId(id);
-
-        subject.next(mr.data);
+    this.sendRequest<CmWorkspace>(id, 'delete-single', {})
+      .subscribe(workspace => {
+        subject.next(workspace);
         subject.complete();
 
+        this.removeItemWithId(workspace.id);
         this.cacheSubject.next(this.cache);
-      } else {
-        this.message.create('error', mr.errorMessage());
-      }
     });
     return subject;
   }
 
-  sendRequest(url: string, cmd: string, params: object): Observable<MessageResponse<object>> {
+  sendRequest<T>(url: string, cmd: string, params: object): Observable<T> {
+    const subject: AsyncSubject<T> = new AsyncSubject();
+
     // @ts-ignore
-    return this.http.post(this.url(url),
+    this.http.post(this.url(url),
       params,
       {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
           'cmd': cmd
         })
-      });
+      }).subscribe(messageResponse => {
+      const mr: MessageResponse<CmWorkspace> = MessageResponse.from(messageResponse);
+      if (mr.isSuccess()) {
+        // @ts-ignore
+        subject.next(mr.data);
+        subject.complete();
+      } else {
+        this.message.create('error', mr.errorMessage());
+      }
+    });
+    return subject;
   }
 
   private removeItemWithId(id: string) {

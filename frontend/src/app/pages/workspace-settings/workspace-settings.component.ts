@@ -67,17 +67,13 @@ export class WorkspaceSettingsComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     const nw: CmWorkspace = this.collectCwFromUi();
-    // nw.name = this.newWorkspaceName;
-    // nw.fileRanges = this.newWorkspaceFileRange.split("\n");
-    // this.workSpaceService.newWorkspaces(nw)
-    //   .subscribe(messageResponse => {
-    //     const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
-    //     if (mr.isSuccess()) {
-    //       this.router.navigate(["/backend-tasks"]);
-    //     } else {
-    //       this.message.create('error', mr.errorMessage());
-    //     }
-    //   });
+    this.workSpaceService.updateWorkspaces(nw)
+      .subscribe(workspace => {
+        this.message.create('success', "Success in updating workspace.");
+        if (workspace.fileToAnalyze != null && workspace.fileToAnalyze.length > 0) {
+          this.router.navigate(["backend-tasks"]);
+        }
+      });
   }
 
   private showWorkspace(cw: CmWorkspace) {
@@ -126,6 +122,7 @@ export class WorkspaceSettingsComponent implements OnInit {
     cw.relationTypes = this.collectRelationTypes();
     cw.selected = this.splitStr(this.selected);
     cw.refCount = this.refCount;
+    cw.fileToAnalyze = this.splitStr(this.fileToAnalyze);
     cw.fileRanges = this.splitStr(this.fileRanges);
     return cw;
   }
