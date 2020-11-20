@@ -1,7 +1,12 @@
-import {CheckItem} from "./check-item";
-import {CmWorkspace} from "./cm-workspace";
+import {CheckItem} from "../../model/check-item";
+import {CmWorkspace} from "../../model/cm-workspace";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {CmWorkspaceService} from "../../services/cm-workspace.service";
+import {ActivatedRoute} from "@angular/router";
+import {Directive} from "@angular/core";
 
-export class CmWorkspaceUi {
+@Directive()
+export abstract class CmWorkspaceSingle {
   id: string;
   name?: string;
   includes?: string;
@@ -19,6 +24,46 @@ export class CmWorkspaceUi {
   fileToAnalyze?: string;
   fileRanges?: string;
 
+  validateForm!: FormGroup;
+
+  protected fb: FormBuilder;
+  protected workSpaceService: CmWorkspaceService;
+  protected route: ActivatedRoute;
+
+  protected constructor(fb: FormBuilder,
+                        workSpaceService: CmWorkspaceService,
+                        route: ActivatedRoute,
+              ) {
+    this.fb = fb;
+    this.workSpaceService = workSpaceService;
+    this.route = route;
+  }
+
+  ngOnInit(): void {
+    this.validateForm = this.fb.group({
+      name: [null, [Validators.required]],
+      includes: [null, []],
+      highlight: [null, []],
+      excludes: [null, []],
+      relationTypes: [null, []],
+      selected: [null, []],
+      refCount: [null, []],
+      fileToAnalyze: [null, []],
+      fileRanges: [null, []],
+    });
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      this.workSpaceService.querySingle(id)
+        .subscribe(workspace => this.showWorkspace(workspace));
+    });
+  }
+
+  protected check() {
+    for (const i in this.validateForm.controls) {
+      this.validateForm.controls[i].markAsDirty();
+      this.validateForm.controls[i].updateValueAndValidity();
+    }
+  }
 
   showWorkspace(cw: CmWorkspace) {
     this.id = cw.id;
