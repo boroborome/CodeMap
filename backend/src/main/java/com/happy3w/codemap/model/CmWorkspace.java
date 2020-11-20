@@ -16,6 +16,7 @@ public class CmWorkspace {
     private Set<String> includes = new HashSet<>();
     private Set<String> excludes = new HashSet<>();
     private Set<String> relationTypes = new HashSet<>();
+    private Set<String> highlight = new HashSet<>();
     private Set<String> selected = new HashSet<>();
     private int refCount = 2;
     private boolean isDirty;

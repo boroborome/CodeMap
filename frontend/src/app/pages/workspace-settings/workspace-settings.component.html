@@ -19,6 +19,13 @@
                 nzAutosize [(ngModel)]="excludes"></textarea>
     </nz-form-control>
   </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="highlight">Highlight</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="highlight" nz-input placeholder="Some node to high light"
+                nzAutosize [(ngModel)]="highlight"></textarea>
+    </nz-form-control>
+  </nz-form-item>
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relationTypes">Relation Types</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">

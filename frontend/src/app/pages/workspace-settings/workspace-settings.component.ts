@@ -20,6 +20,7 @@ export class WorkspaceSettingsComponent implements OnInit {
   id: string;
   name?: string;
   includes?: string;
+  highlight?: string;
   excludes?: string;
   relationTypes: CheckItem[] = [
     { label: 'inherit', value: 'inherit', checked: true },
@@ -34,7 +35,6 @@ export class WorkspaceSettingsComponent implements OnInit {
   fileRanges?: string;
 
   validateForm!: FormGroup;
-  fileList: string;
   constructor(private fb: FormBuilder,
               private workSpaceService: CmWorkspaceService,
               private message: NzMessageService,
@@ -47,6 +47,7 @@ export class WorkspaceSettingsComponent implements OnInit {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
       includes: [null, []],
+      highlight: [null, []],
       excludes: [null, []],
       relationTypes: [null, []],
       selected: [null, []],
@@ -81,6 +82,7 @@ export class WorkspaceSettingsComponent implements OnInit {
     this.name = cw.name;
 
     this.includes = this.connectStr(cw.includes);
+    this.highlight = this.connectStr(cw.highlight);
     this.excludes = this.connectStr(cw.excludes);
     this.updateRelationTypes(cw.relationTypes);
     this.selected = this.connectStr(cw.selected);
@@ -118,6 +120,7 @@ export class WorkspaceSettingsComponent implements OnInit {
     cw.id = this.id;
     cw.name = this.name;
     cw.includes = this.splitStr(this.includes);
+    cw.highlight = this.splitStr(this.highlight);
     cw.excludes = this.splitStr(this.excludes);
     cw.relationTypes = this.collectRelationTypes();
     cw.selected = this.splitStr(this.selected);

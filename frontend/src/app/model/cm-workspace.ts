@@ -4,6 +4,7 @@ export class CmWorkspace {
   includes?: string[];
   excludes?: string[];
   relationTypes?: string[];
+  highlight?: string[];
   selected?: string[];
   refCount?: number;
   fileToAnalyze?: string[];
