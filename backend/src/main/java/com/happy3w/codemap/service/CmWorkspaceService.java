@@ -13,7 +13,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,5 +74,16 @@ public class CmWorkspaceService {
             esAssistant.deleteById(CmWorkspace.class, id);
             return workspace;
         }
+    }
+
+    public CmWorkspace updateWorkspace(CmWorkspace workspace) {
+        esAssistant.saveData(workspace);
+        esAssistant.flush(CmWorkspace.class);
+        CmWorkspace updatedWorkspace = esAssistant.queryById(CmWorkspace.class, workspace.getId());
+
+        if (!updatedWorkspace.getFileToAnalyze().isEmpty()) {
+            startBackendTask(updatedWorkspace);
+        }
+        return updatedWorkspace;
     }
 }

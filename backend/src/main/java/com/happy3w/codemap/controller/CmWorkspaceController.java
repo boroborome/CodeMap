@@ -49,4 +49,12 @@ public class CmWorkspaceController {
         CmWorkspace workspace = cmWorkspaceService.deleteSingle(id);
         return MessageResponse.fromData(workspace);
     }
+
+    @ResponseBody
+    @PostMapping(value = "/{id}", headers = "cmd=update-single")
+    public MessageResponse<CmWorkspace> updateSingle(@PathVariable(name = "id") String id, @RequestBody CmWorkspace workspace) {
+        workspace.setId(id);
+        CmWorkspace updatedWorkspace = cmWorkspaceService.updateWorkspace(workspace);
+        return MessageResponse.fromData(updatedWorkspace);
+    }
 }
