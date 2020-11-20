@@ -18,6 +18,7 @@ export class WorkspaceViewComponent implements OnInit {
   name?: string;
   includes?: string;
   excludes?: string;
+  highlight?: string;
   relationTypes: CheckItem[] = [
     { label: 'inherit', value: 'inherit', checked: true },
     { label: 'member', value: 'member', checked: true },
@@ -40,6 +41,7 @@ export class WorkspaceViewComponent implements OnInit {
       name: [null, [Validators.required]],
       includes: [null, []],
       excludes: [null, []],
+      highlight: [null, []],
       relationTypes: [null, []],
       selected: [null, []],
       refCount: [null, []],

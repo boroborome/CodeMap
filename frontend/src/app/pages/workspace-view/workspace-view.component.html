@@ -23,6 +23,16 @@
         </div>
 
         <div nz-col [nzSpan]="12">
+          <nz-form-item class="register-area">
+            <nz-form-label [nzSm]="4" nzFor="highlight">Highlight</nz-form-label>
+            <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
+      <textarea formControlName="highlight" nz-input placeholder="Some node to highlight"
+                nzAutosize [(ngModel)]="highlight"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label [nzSm]="4" nzRequired nzFor="refCount">Ref count</nz-form-label>
             <nz-form-control [nzSm]="20" nzErrorTip="The input can't be empty!">
