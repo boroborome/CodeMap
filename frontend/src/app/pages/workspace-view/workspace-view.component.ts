@@ -5,12 +5,7 @@ import {CmWorkspaceSingle} from "../workspace-common/workspace-single.component"
 import {CmWorkspaceService} from "../../services/cm-workspace.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzModalService} from "ng-zorro-antd/modal";
-
-class CheckItem {
-  label: string;
-  value: string;
-  checked: boolean;
-}
+import {EChartOption} from 'echarts';
 
 @Component({
   selector: 'app-workspace-view',
@@ -18,6 +13,19 @@ class CheckItem {
   styleUrls: ['./workspace-view.component.scss']
 })
 export class WorkspaceViewComponent extends CmWorkspaceSingle implements OnInit {
+  chartOption: EChartOption = {
+    xAxis: {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      data: [820, 932, 901, 934, 1290, 1330, 1320],
+      type: 'line'
+    }]
+  }
 
   isCollapse = false;
 
@@ -38,6 +46,7 @@ export class WorkspaceViewComponent extends CmWorkspaceSingle implements OnInit 
   resetForm(): void {
     this.validateForm.reset();
   }
+
   toggleCollapse(): void {
     this.isCollapse = !this.isCollapse;
   }

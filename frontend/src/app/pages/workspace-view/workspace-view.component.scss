@@ -1,11 +1,4 @@
-.ant-advanced-search-form {
-  background: #fbfbfb;
-  border: 1px solid #d9d9d9;
-}
-.ant-layout-header {
-  height: initial;
-  padding: initial;
-}
+
 .search-result-list {
   margin-top: 6px;
   border: 1px dashed #e9e9e9;
@@ -14,6 +7,7 @@
   min-height: 200px;
   text-align: center;
   padding-top: 80px;
+  height: 100%;
 }
 
 [nz-form-label] {
