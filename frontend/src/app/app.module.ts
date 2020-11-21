@@ -28,6 +28,7 @@ import {NzModalModule} from 'ng-zorro-antd/modal';
 import {SuccessResultComponent} from './pages/success-result/success-result.component';
 import {NzResultModule} from 'ng-zorro-antd/result';
 import {NzButtonModule} from "ng-zorro-antd/button";
+import { NgxEchartsModule } from 'ngx-echarts';
 
 registerLocaleData(zh);
 
@@ -61,6 +62,9 @@ registerLocaleData(zh);
     NzModalModule,
     NzResultModule,
     NzButtonModule,
+    NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    }),
   ],
   providers: [{provide: NZ_I18N, useValue: zh_CN}],
   bootstrap: [AppComponent]
