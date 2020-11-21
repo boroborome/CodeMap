@@ -1,6 +1,6 @@
-<nz-layout>
+<nz-layout style="height: 100%">
   <nz-header>
-    <div nz-form [formGroup]="validateForm" class="ant-advanced-search-form">
+    <div nz-form [formGroup]="validateForm">
       <div nz-row [nzGutter]="24" [hidden]="isCollapse">
         <div nz-col [nzSpan]="12">
           <nz-form-item class="register-area">
@@ -65,9 +65,7 @@
     </div>
   </nz-header>
   <nz-content>
-    <div class="search-result-list">
-      Search Result List
-    </div>
+    <div echarts [options]="chartOption" class="search-result-list"></div>
   </nz-content>
 </nz-layout>
 
