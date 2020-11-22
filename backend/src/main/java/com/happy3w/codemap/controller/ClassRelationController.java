@@ -20,7 +20,7 @@ public class ClassRelationController {
     }
 
     @ResponseBody
-    @PostMapping(headers = "cmd=new-workspace")
+    @PostMapping(headers = "cmd=query-relation")
     public MessageResponse<RelationResult> createWorkspace(@RequestBody ClassRelationFilter filter) {
         RelationResult result = classRelationService.queryRelation(filter);
         return MessageResponse.fromData(result);
