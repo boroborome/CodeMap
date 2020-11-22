@@ -32,6 +32,7 @@ public class ClassRelationService {
                         .maxSize(2001)
                         .build())
                 .peek(r -> collectNodes(r, nodes, existNodeIds))
+                .filter(relation -> relation.getClassB() != null)
                 .collect(Collectors.toList());
         return new RelationResult(nodes, relations, relations.size() > 2000);
     }
@@ -42,11 +43,12 @@ public class ClassRelationService {
     }
 
     private void collectNodes(String nodeId, List<ClassInfo> nodes, Set<String> existNodeIds) {
-        if (existNodeIds.contains(nodeId)) {
+        if (nodeId == null || existNodeIds.contains(nodeId)) {
             return;
         }
         int index = nodeId.lastIndexOf('/');
         String shortName = index < 0 ? nodeId : nodeId.substring(index + 1);
         nodes.add(new ClassInfo(nodeId, shortName));
+        existNodeIds.add(nodeId);
     }
 }
