@@ -4,6 +4,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CmWorkspaceService} from "../../services/cm-workspace.service";
 import {ActivatedRoute} from "@angular/router";
 import {Directive} from "@angular/core";
+import {AsyncSubject, Observable} from "rxjs";
+import {StringUtil} from "../../utils/string-util";
 
 @Directive()
 export abstract class CmWorkspaceSingle {
@@ -39,7 +41,7 @@ export abstract class CmWorkspaceSingle {
     this.route = route;
   }
 
-  ngOnInit(): void {
+  initWorkspace(): Observable<CmWorkspace> {
     this.validateForm = this.fb.group({
       name: [null, [Validators.required]],
       includes: [null, []],
@@ -51,11 +53,17 @@ export abstract class CmWorkspaceSingle {
       fileToAnalyze: [null, []],
       fileRanges: [null, []],
     });
+    const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.workSpaceService.querySingle(id)
-        .subscribe(workspace => this.showWorkspace(workspace));
+        .subscribe(workspace => {
+          this.showWorkspace(workspace);
+          subject.next(workspace);
+          subject.complete();
+        });
     });
+    return subject;
   }
 
   protected check() {
@@ -69,30 +77,13 @@ export abstract class CmWorkspaceSingle {
     this.id = cw.id;
     this.name = cw.name;
 
-    this.includes = this.connectStr(cw.includes);
-    this.highlight = this.connectStr(cw.highlight);
-    this.excludes = this.connectStr(cw.excludes);
+    this.includes = StringUtil.connectStr(cw.includes);
+    this.highlight = StringUtil.connectStr(cw.highlight);
+    this.excludes = StringUtil.connectStr(cw.excludes);
     this.updateRelationTypes(cw.relationTypes);
-    this.selected = this.connectStr(cw.selected);
+    this.selected = StringUtil.connectStr(cw.selected);
     this.refCount = cw.refCount;
-    this.fileRanges = this.connectStr(cw.fileRanges);
-  }
-
-  private connectStr(strArray: string[]): string {
-    if (strArray == null || strArray.length == 0) {
-      return "";
-    } else if (strArray.length == 1) {
-      return strArray[0];
-    } else {
-      return strArray.join(",");
-    }
-  }
-
-  private splitStr(str: string): string[] {
-    if (str == null || str.length == 0) {
-      return [];
-    }
-    return str.split(",");
+    this.fileRanges = StringUtil.connectStr(cw.fileRanges);
   }
 
   private updateRelationTypes(relationTypes: string[]) {
@@ -107,14 +98,14 @@ export abstract class CmWorkspaceSingle {
     const cw: CmWorkspace = new CmWorkspace();
     cw.id = this.id;
     cw.name = this.name;
-    cw.includes = this.splitStr(this.includes);
-    cw.highlight = this.splitStr(this.highlight);
-    cw.excludes = this.splitStr(this.excludes);
+    cw.includes = StringUtil.splitStr(this.includes);
+    cw.highlight = StringUtil.splitStr(this.highlight);
+    cw.excludes = StringUtil.splitStr(this.excludes);
     cw.relationTypes = this.collectRelationTypes();
-    cw.selected = this.splitStr(this.selected);
+    cw.selected = StringUtil.splitStr(this.selected);
     cw.refCount = this.refCount;
-    cw.fileToAnalyze = this.splitStr(this.fileToAnalyze);
-    cw.fileRanges = this.splitStr(this.fileRanges);
+    cw.fileToAnalyze = StringUtil.splitStr(this.fileToAnalyze);
+    cw.fileRanges = StringUtil.splitStr(this.fileRanges);
     return cw;
   }
 

@@ -12,7 +12,7 @@ export abstract class BaseService {
   }
 
   url(relativeUrl: string): string {
-    return `/${this.serviceBaseUrl}/${relativeUrl}`;
+    return `/api/${this.serviceBaseUrl}/${relativeUrl}`;
   }
 
   sendRequest<T>(url: string, cmd: string, params: object): Observable<T> {

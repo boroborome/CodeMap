@@ -53,7 +53,7 @@
       </div>
       <div nz-row>
         <div nz-col [nzSpan]="24" class="search-area">
-          <button nz-button [nzType]="'primary'">Search</button>
+          <button nz-button [nzType]="'primary'" (click)="refreshRelationWithInput()">Search</button>
           <button nz-button (click)="resetForm()">Save Config</button>
           <button nz-button (click)="resetForm()">Reset</button>
           <a class="collapse" (click)="toggleCollapse()">
@@ -65,7 +65,7 @@
     </div>
   </nz-header>
   <nz-content>
-    <div echarts [options]="chartOption" class="search-result-list"></div>
+    <div echarts [loading]="showLoading" [options]="chartOption" class="search-result-list"></div>
   </nz-content>
 </nz-layout>
 

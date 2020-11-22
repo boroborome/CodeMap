@@ -25,7 +25,7 @@ export class WorkspaceSettingsComponent extends CmWorkspaceSingle implements OnI
   }
 
   ngOnInit(): void {
-    super.ngOnInit();
+    super.initWorkspace();
   }
 
   submitForm(): void {

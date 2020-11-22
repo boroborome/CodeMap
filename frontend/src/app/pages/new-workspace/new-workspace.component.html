@@ -6,9 +6,9 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item nz-row class="register-area">
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileList">Files</nz-form-label>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fileToAnalyze">Files</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input can't be empty!">
-      <textarea formControlName="fileList" id="fileList" nz-input placeholder="File or Dir contains jar"
+      <textarea formControlName="fileToAnalyze" id="fileList" nz-input placeholder="File or Dir contains jar"
                 nzAutosize [(ngModel)]="fileToAnalyze"></textarea>
     </nz-form-control>
   </nz-form-item>

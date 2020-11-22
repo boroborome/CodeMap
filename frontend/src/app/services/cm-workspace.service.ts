@@ -61,16 +61,20 @@ export class CmWorkspaceService extends BaseService {
     if (this.cache == null) {
       const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
       this.queryAllWorkspaces()
-        .subscribe(_ => {
-          const index = this.cache.findIndex(item => item.id == id);
-          subject.next(this.cache[index]);
-          subject.complete();
+        .subscribe(results => {
+          const index = results.findIndex(item => item.id == id);
+          if (index >= 0) {
+            subject.next(results[index]);
+            subject.complete();
+          }
         });
       return subject;
     } else {
       return new Observable(subscriber => {
         const index = this.cache.findIndex(item => item.id == id);
-        subscriber.next(this.cache[index]);
+        if (index >= 0) {
+          subscriber.next(this.cache[index]);
+        }
       });
     }
   }

@@ -15,7 +15,6 @@ export class NewWorkspaceComponent implements OnInit {
   fileToAnalyze: string = "";
 
   validateForm!: FormGroup;
-  fileList: string;
   constructor(private fb: FormBuilder,
               private workSpaceService: CmWorkspaceService,
               private message: NzMessageService,
