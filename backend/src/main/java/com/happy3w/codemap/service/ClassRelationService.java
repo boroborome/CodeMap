@@ -5,7 +5,6 @@ import com.happy3w.codemap.model.ClassRelation;
 import com.happy3w.codemap.model.ClassRelationFilter;
 import com.happy3w.codemap.model.RelationResult;
 import com.happy3w.persistence.core.assistant.QueryOptions;
-import com.happy3w.persistence.core.filter.FilterAssistant;
 import com.happy3w.persistence.es.EsAssistant;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,7 @@ public class ClassRelationService {
         Set<String> existNodeIds = new HashSet<>();
         List<ClassInfo> nodes = new ArrayList<>();
         List<ClassRelation> relations = esAssistant.queryStream(ClassRelation.class,
-                FilterAssistant.createFilters(filter),
+                filter.toFilterList(),
                 QueryOptions.builder()
                         .maxSize(2001)
                         .build())

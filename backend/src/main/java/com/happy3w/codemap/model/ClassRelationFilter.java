@@ -27,13 +27,13 @@ public class ClassRelationFilter implements IFilterAble {
     @Override
     public List<IFilter> toFilterList() {
         List<IFilter> filters = new ArrayList<>();
-        filters.add(new StringInFilter("fileRanges", fileRanges));
+        filters.add(new StringInFilter("jarFile", fileRanges));
 
         List<IFilter> fieldFilter = new ArrayList<>();
         fieldFilter.add(matchField("classA"));
         fieldFilter.add(matchField("classB"));
 
-        IFilter combineFilter = CombineFilter.create(CombineFilter.Ops.Or, filters);
+        IFilter combineFilter = CombineFilter.create(CombineFilter.Ops.Or, fieldFilter);
         if (combineFilter != null) {
             filters.add(combineFilter);
         }
