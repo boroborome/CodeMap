@@ -1,26 +1,22 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ApiService} from "./api.service";
 import {AsyncSubject, BehaviorSubject, Observable} from "rxjs";
 import {CmWorkspace} from "../model/cm-workspace";
 import {MessageResponse} from "../model/message-response";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {BaseService} from "./base-service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CmWorkspaceService {
+export class CmWorkspaceService extends BaseService {
   cache: CmWorkspace[] = null;
   cacheSubject: BehaviorSubject<CmWorkspace[]> = new BehaviorSubject([]);
 
-  constructor(private http: HttpClient,
-              private api: ApiService,
-              private message: NzMessageService,
+  constructor(http: HttpClient,
+              message: NzMessageService,
   ) {
-  }
-
-  url(relativeUrl: string): string {
-    return this.api.cmApi(`/workspace/${relativeUrl}`);
+    super('workspace', http, message);
   }
 
   queryAllWorkspaces(): Observable<CmWorkspace[]> {
@@ -112,30 +108,6 @@ export class CmWorkspaceService {
 
         this.removeItemWithId(workspace.id);
         this.cacheSubject.next(this.cache);
-    });
-    return subject;
-  }
-
-  sendRequest<T>(url: string, cmd: string, params: object): Observable<T> {
-    const subject: AsyncSubject<T> = new AsyncSubject();
-
-    // @ts-ignore
-    this.http.post(this.url(url),
-      params,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'cmd': cmd
-        })
-      }).subscribe(messageResponse => {
-      const mr: MessageResponse<CmWorkspace> = MessageResponse.from(messageResponse);
-      if (mr.isSuccess()) {
-        // @ts-ignore
-        subject.next(mr.data);
-        subject.complete();
-      } else {
-        this.message.create('error', mr.errorMessage());
-      }
     });
     return subject;
   }

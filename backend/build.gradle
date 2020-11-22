@@ -25,7 +25,8 @@ dependencies {
 	implementation 'org.ow2.asm:asm-tree:9.0'
 	implementation 'org.ow2.asm:asm-analysis:9.0'
 	implementation 'org.ow2.asm:asm-util:9.0'
-	implementation 'com.happy3w:persistence-es:0.0.1'
+//	implementation 'com.happy3w:persistence-es:0.0.1'
+	implementation project(':persistence-es')
 
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
