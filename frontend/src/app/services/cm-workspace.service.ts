@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {AsyncSubject, BehaviorSubject, Observable} from "rxjs";
 import {CmWorkspace} from "../model/cm-workspace";
-import {MessageResponse} from "../model/message-response";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {BaseService} from "./base-service";
 
@@ -20,51 +19,28 @@ export class CmWorkspaceService extends BaseService {
   }
 
   queryAllWorkspaces(): Observable<CmWorkspace[]> {
-    // @ts-ignore
-    this.http.post(this.url(''),
-      "{}",
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'cmd': 'query-all'
-        })
-      }).subscribe(messageResponse => {
-      const mr: MessageResponse<CmWorkspace[]> = MessageResponse.from(messageResponse);
-      if (mr.isSuccess()) {
-        this.cache = mr.data;
+    this.sendRequest<CmWorkspace>('', 'query-all', {})
+      .subscribe(workspaces => {
+        //@ts-ignore
+        this.cache = workspaces;
         this.cacheSubject.next(this.cache);
-      } else {
-        this.message.create('error', mr.errorMessage());
-      }
-    });
+      });
     return this.cacheSubject;
   }
 
   newWorkspaces(workspace: CmWorkspace): Observable<CmWorkspace> {
     const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
-    // @ts-ignore
-    this.http.post(this.url(''),
-      workspace,
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'cmd': 'new-workspace'
-        })
-      }).subscribe(messageResponse => {
-      const mr: MessageResponse<CmWorkspace> = MessageResponse.from(messageResponse);
-      if (mr.isSuccess()) {
-        this.cache.push(mr.data);
-        subject.next(mr.data);
+
+    this.sendRequest<CmWorkspace>('', 'new-workspace', workspace)
+      .subscribe(newWorkspace => {
+        this.cache.push(newWorkspace);
+        subject.next(newWorkspace);
         subject.complete();
 
         this.cacheSubject.next(this.cache);
-      } else {
-        this.message.create('error', mr.errorMessage());
-      }
-    });
+      });
     return subject;
   }
-
 
   updateWorkspaces(workspace: CmWorkspace): Observable<CmWorkspace> {
     const subject: AsyncSubject<CmWorkspace> = new AsyncSubject();
@@ -108,7 +84,7 @@ export class CmWorkspaceService extends BaseService {
 
         this.removeItemWithId(workspace.id);
         this.cacheSubject.next(this.cache);
-    });
+      });
     return subject;
   }
 

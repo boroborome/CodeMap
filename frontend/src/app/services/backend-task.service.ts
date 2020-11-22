@@ -1,33 +1,22 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ApiService} from "./api.service";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {MessageResponse} from "../model/message-response";
 import {BackendTask} from "../model/backend-task";
+import {BaseService} from "./base-service";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Injectable({
   providedIn: 'root'
 })
-export class BackendTaskService {
+export class BackendTaskService extends BaseService {
 
-  constructor(private http: HttpClient,
-              private api: ApiService,
-              ) { }
-
-
-  url(relativeUrl: string): string {
-    return this.api.cmApi(`/backend-task/${relativeUrl}`);
+  constructor(http: HttpClient,
+              message: NzMessageService,
+  ) {
+    super('backend-task', http, message);
   }
 
-  queryAllTasks(): Observable<MessageResponse<BackendTask[]>> {
-    // @ts-ignore
-    return this.http.post(this.url(''),
-      "{}",
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'cmd': 'query-all'
-        })
-      });
+  queryAllTasks(): Observable<BackendTask[]> {
+    return this.sendRequest('', 'query-all', {});
   }
 }
