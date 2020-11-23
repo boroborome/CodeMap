@@ -23,13 +23,8 @@ export class BackendTaskComponent implements OnInit {
   }
   private reloadTasks() {
     this.backendTaskService.queryAllTasks()
-      .subscribe(messageResponse => {
-        const mr: MessageResponse<BackendTask[]> = MessageResponse.from(messageResponse);
-        if (mr.isSuccess()) {
-          this.listOfData = mr.data;
-        } else {
-          this.message.create('error', mr.errorMessage());
-        }
+      .subscribe(tasks => {
+          this.listOfData = tasks;
       });
   }
 }

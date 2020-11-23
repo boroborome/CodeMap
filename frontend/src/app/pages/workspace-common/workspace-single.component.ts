@@ -83,6 +83,7 @@ export abstract class CmWorkspaceSingle {
     this.updateRelationTypes(cw.relationTypes);
     this.selected = StringUtil.connectStr(cw.selected);
     this.refCount = cw.refCount;
+    this.fileToAnalyze = StringUtil.connectStr(cw.fileToAnalyze);
     this.fileRanges = StringUtil.connectStr(cw.fileRanges);
   }
 
