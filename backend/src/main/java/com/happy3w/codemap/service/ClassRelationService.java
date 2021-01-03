@@ -25,7 +25,7 @@ public class ClassRelationService {
     public RelationResult queryRelation(ClassRelationFilter filter) {
         Set<String> existNodeIds = new HashSet<>();
         List<ClassInfo> nodes = new ArrayList<>();
-        List<ClassRelation> relations = esAssistant.queryStream(ClassRelation.class,
+        List<ClassRelation> relations = esAssistant.findByFilter(ClassRelation.class,
                 filter.toFilterList(),
                 QueryOptions.builder()
                         .maxSize(2001)

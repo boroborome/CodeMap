@@ -28,7 +28,7 @@ public class CmWorkspaceService {
     }
 
     public List<CmWorkspace> queryAllWorkspaces() {
-        return esAssistant.queryStream(CmWorkspace.class, Collections.emptyList(), null)
+        return esAssistant.findByFilter(CmWorkspace.class, Collections.emptyList(), null)
                 .collect(Collectors.toList());
     }
 
@@ -37,7 +37,7 @@ public class CmWorkspaceService {
             throw new MessageRecorderException("Name is required in Workspace.");
         }
         newWorkspace.setDirty(true);
-        boolean nameExisted = esAssistant.queryStream(
+        boolean nameExisted = esAssistant.findByFilter(
                 CmWorkspace.class,
                 Arrays.asList(new StringEqualFilter("name", newWorkspace.getName())),
                 null)
@@ -63,11 +63,11 @@ public class CmWorkspaceService {
     }
 
     public CmWorkspace querySingle(String id) {
-        return esAssistant.queryById(CmWorkspace.class, id);
+        return esAssistant.findById(CmWorkspace.class, id);
     }
 
     public CmWorkspace deleteSingle(String id) {
-        CmWorkspace workspace = esAssistant.queryById(CmWorkspace.class, id);
+        CmWorkspace workspace = esAssistant.findById(CmWorkspace.class, id);
         if (workspace == null) {
             return new CmWorkspace();
         } else {
@@ -79,7 +79,7 @@ public class CmWorkspaceService {
     public CmWorkspace updateWorkspace(CmWorkspace workspace) {
         esAssistant.saveData(workspace);
         esAssistant.flush(CmWorkspace.class);
-        CmWorkspace updatedWorkspace = esAssistant.queryById(CmWorkspace.class, workspace.getId());
+        CmWorkspace updatedWorkspace = esAssistant.findById(CmWorkspace.class, workspace.getId());
 
         if (!updatedWorkspace.getFileToAnalyze().isEmpty()) {
             startBackendTask(updatedWorkspace);
