@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,7 +25,10 @@ public class RelationAnalyzerTest {
     @Test
     public void should_collect_annotation_on_class_success() throws IOException {
         ClassReader classReader = new ClassReader(AnnotationClass.class.getName());
-        String result = relationAnalyzer.collectRelations(classReader)
+        ClassNode node = new ClassNode();
+        classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+
+        String result = relationAnalyzer.collectRelations(node)
                 .collect(Collectors.toList())
                 .toString();
         Assert.assertEquals("[com/happy3w/codemap/AnnotationClass-null->null, com/happy3w/codemap/AnnotationClass-reference->com/happy3w/codemap/DemoAnnotation]",

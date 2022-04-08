@@ -2,3 +2,9 @@ rootProject.name = 'CodeMap'
 include('frontend')
 include('backend')
 include('publish')
+include ":persistence-es"
+project(":persistence-es").projectDir = file("../persistence-es")
+include ":persistence-core"
+project(":persistence-core").projectDir = file("../persistence-core")
+include ":toolkits"
+project(":toolkits").projectDir = file("../toolkits")

@@ -2,7 +2,6 @@ package com.happy3w.codemap.component;
 
 import com.happy3w.codemap.model.ClassRelation;
 import com.happy3w.codemap.strategy.insn.InsnAnalyzerManager;
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.InsnList;
@@ -31,10 +30,7 @@ public class RelationAnalyzer {
         this.innerClassAdapter = innerClassAdapter;
     }
 
-    public Stream<ClassRelation> collectRelations(ClassReader classReader) {
-        ClassNode node = new ClassNode();
-        classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-
+    public Stream<ClassRelation> collectRelations(ClassNode node) {
         return Stream.of(
                 Stream.of(new ClassRelation(node.name, null, null)),
                 toRelation(node.name, ClassRelation.INHERIT , superClassStream(node)),

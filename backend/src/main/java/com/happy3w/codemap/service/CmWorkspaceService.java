@@ -3,10 +3,10 @@ package com.happy3w.codemap.service;
 import com.happy3w.codemap.component.WorkspaceAnalyzer;
 import com.happy3w.codemap.model.BackendTask;
 import com.happy3w.codemap.model.CmWorkspace;
+import com.happy3w.java.ext.StringUtils;
 import com.happy3w.persistence.core.filter.impl.StringEqualFilter;
 import com.happy3w.persistence.es.EsAssistant;
 import com.happy3w.toolkits.message.MessageRecorderException;
-import com.happy3w.toolkits.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;

@@ -4,9 +4,10 @@ import com.happy3w.codemap.model.BackendTask;
 import com.happy3w.codemap.model.ClassRelation;
 import com.happy3w.codemap.model.CmWorkspace;
 import com.happy3w.codemap.utils.JarLoader;
+import com.happy3w.java.ext.FileUtils;
 import com.happy3w.persistence.es.EsAssistant;
-import com.happy3w.toolkits.utils.FileUtils;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class WorkspaceAnalyzer {
     private Stream<ClassRelation> analyzeJarFile(File jarFile) {
         String shortName = jarFile.getName();
         return JarLoader.listAllClassesBytes(jarFile.getAbsolutePath())
-                .map(this::createClassReader)
+                .map(this::createClassNode)
                 .flatMap(relationAnalyzer::collectRelations)
                 .peek(relation -> {
                     relation.setJarFile(shortName);
@@ -56,9 +57,12 @@ public class WorkspaceAnalyzer {
                 });
     }
 
-    private ClassReader createClassReader(InputStream inputStream) {
+    private ClassNode createClassNode(InputStream inputStream) {
         try {
-            return new ClassReader(inputStream);
+            ClassNode node = new ClassNode();
+            ClassReader classReader = new ClassReader(inputStream);
+            classReader.accept(node, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+            return node;
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed to load class data.");
         }
